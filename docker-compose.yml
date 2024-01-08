@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: vendetta
+      POSTGRES_PASSWORD: vendetta
+      POSTGRES_DB: vendetta
+    volumes:
+      - postgresDB:/var/lib/postgres
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgresDB:
