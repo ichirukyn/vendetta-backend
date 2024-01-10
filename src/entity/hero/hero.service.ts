@@ -23,7 +23,7 @@ export class HeroService {
   }
   
   async getHero(hero_id?: number, user_id?: number) {
-    if (user_id) return await this.heroesRepository.findOneBy({ user_id: user_id });
+    if (user_id && user_id != 0) return await this.heroesRepository.findOneBy({ user_id: user_id });
     if (hero_id) return await this.heroesRepository.findOneBy({ id: hero_id });
   }
   
