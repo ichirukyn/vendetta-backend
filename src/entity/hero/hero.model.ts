@@ -4,6 +4,7 @@ import { User } from '../users/user.model';
 import { Race } from '../race/race.model';
 import { Class } from '../class/class.model';
 import { Lvl } from '../lvl/lvl.model';
+import { Stats } from '../stats.model';
 
 @Entity({ name: 'heroes' })
 export class Hero {
@@ -52,7 +53,7 @@ export class Hero {
 }
 
 @Entity({ name: 'hero_stats' })
-export class HeroStats {
+export class HeroStats extends Stats {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
@@ -65,54 +66,6 @@ export class HeroStats {
   @ApiProperty({ example: 1 })
   @Column()
   lvl: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  strength: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  health: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  speed: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  accuracy: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  dexterity: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  soul: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  intelligence: number;
-  
-  @ApiProperty({ example: 100 })
-  @Column()
-  submission: number;
-  
-  @ApiProperty({ example: 0.05 })
-  @Column()
-  crit_rate: number;
-  
-  @ApiProperty({ example: 0.5 })
-  @Column()
-  crit_damage: number;
-  
-  @ApiProperty({ example: 0.1 })
-  @Column()
-  resist: number;
-  
-  @ApiProperty({ example: 7 })
-  @Column()
-  total_stats: number;
   
   @ApiProperty({ example: 10 })
   @Column()
@@ -139,7 +92,7 @@ export class HeroLvl {
   @Column()
   exp: number;
   
-  @OneToOne(type => Lvl)
-  @JoinColumn({name: 'lvl'})
+  @OneToOne(() => Lvl)
+  @JoinColumn({ name: 'lvl' })
   level: Lvl;
 }

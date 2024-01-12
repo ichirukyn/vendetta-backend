@@ -25,14 +25,6 @@ export class ClassService {
     return await this.classRepository.find();
   }
   
-  async getClassByRace(race_id?: number) {
-    return await this.classRepository.find({
-      relations: ['race'],
-      where: { race: { id: race_id } },
-    });
-  }
-  
-  
   async getClassBonuses(class_id: number) {
     return await this.classBonusesRepository.findBy({ class_id: class_id });
   }

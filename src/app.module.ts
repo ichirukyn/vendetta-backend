@@ -22,8 +22,20 @@ import { Lvl } from './entity/lvl/lvl.model';
 import { Statistic } from './entity/statistic/statistic.model';
 import { StatisticModule } from './entity/statistic/statistic.module';
 import { Effect } from './entity/effect/effect.model';
+import { Item } from './entity/item/item.model';
+import { ItemModule } from './entity/item/item.module';
+import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './entity/enemy/enemy.model';
+import { EnemyModule } from './entity/enemy/enemy.module';
 
-const entity = [User, Hero, Race, RaceBonuses, Class, ClassBonuses, Lvl, HeroStats, HeroSkills, HeroLvl, HeroTechniques, Skill, Technique, TechniqueEffect, Statistic, Effect];
+const entity = [
+  User,
+  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechniques,
+  Race, RaceBonuses,
+  Class, ClassBonuses,
+  Technique, TechniqueEffect,
+  Effect, Item, Lvl, Skill, Statistic,
+  Enemy, EnemyStats, EnemyWeapon, EnemyTechnique,
+];
 
 @Module({
   imports: [
@@ -48,6 +60,8 @@ const entity = [User, Hero, Race, RaceBonuses, Class, ClassBonuses, Lvl, HeroSta
     ClassModule,
     TechniqueModule,
     StatisticModule,
+    ItemModule,
+    EnemyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

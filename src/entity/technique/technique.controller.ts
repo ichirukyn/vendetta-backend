@@ -33,7 +33,7 @@ export class TechniqueController {
     return await this.techniqueService.getTechnique(technique_id);
   }
   
-  @ApiOperation({ summary: 'Получение техники по id' })
+  @ApiOperation({ summary: 'Обновление техники по id' })
   @ApiResponse({ status: 200, type: Technique })
   @Put(':technique_id')
   async updateTechnique(@Body() technique: Technique, @Param('technique_id') technique_id: number) {

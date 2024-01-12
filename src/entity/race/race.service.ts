@@ -2,11 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Race, RaceBonuses } from './race.model';
+import { Class } from '../class/class.model';
 
 @Injectable()
 export class RaceService {
   constructor(
     @InjectRepository(Race) private racesRepository: Repository<Race>,
+    @InjectRepository(Class) private classRepository: Repository<Class>,
     @InjectRepository(RaceBonuses) private raceBonusesRepository: Repository<RaceBonuses>,
   ) {}
 
@@ -29,5 +31,9 @@ export class RaceService {
     console.log(bonus[0]);
     console.log(bonus[1]);
     return bonus
+  }
+  
+  async getClassByRace(race_id?: number) {
+    return await this.classRepository.findBy({race_id: race_id});
   }
 }
