@@ -5,6 +5,7 @@ import { Race } from '../race/race.model';
 import { Class } from '../class/class.model';
 import { Lvl } from '../lvl/lvl.model';
 import { Stats } from '../stats.model';
+import { Technique } from '../technique/technique.model';
 
 @Entity({ name: 'heroes' })
 export class Hero {
@@ -95,4 +96,25 @@ export class HeroLvl {
   @OneToOne(() => Lvl)
   @JoinColumn({ name: 'lvl' })
   level: Lvl;
+}
+
+@Entity({ name: 'hero_technique' })
+export class HeroTechnique {
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
+  
+  @ApiProperty({ example: 1 })
+  @OneToOne(() => Hero)
+  @JoinColumn({name: 'hero_id', referencedColumnName: 'id', foreignKeyConstraintName: 'hero_id'})
+  hero_id: number;
+  
+  @ApiProperty({ example: 1 })
+  @OneToOne(() => Technique)
+  @JoinColumn({name: 'technique_id', referencedColumnName: 'id', foreignKeyConstraintName: 'technique_id'})
+  technique_id: number;
+  
+  @ApiProperty({ example: 10 })
+  @Column()
+  lvl: number;
 }

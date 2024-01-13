@@ -32,3 +32,18 @@ export class CreateEnemyStatsDto {
   @ApiProperty({ example: 7 })
   readonly total_stats: number;
 }
+
+// id
+// event_id
+// name
+// desc
+// condition_attr
+// condition
+// condition_value
+// chance
+// condition_item
+// trigger_type
+// text
+// reward
+// mandatory
+// hidden

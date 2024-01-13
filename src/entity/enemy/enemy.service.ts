@@ -69,10 +69,6 @@ export class EnemyService {
   }
   
   async createEnemyWeapon(data: CreateEnemyWeaponDto, enemy_id: number) {
-    console.log('----------');
-    console.log(data);
-    console.log(enemy_id);
-    console.log('----------');
     const weapon = this.enemyWeaponRepository.create({ ...data, enemy_id: enemy_id });
     return this.enemyWeaponRepository.save(weapon);
   }

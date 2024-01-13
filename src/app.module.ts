@@ -5,9 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import * as process from 'process';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HeroModule } from './entity/hero/hero.module';
-import { Hero, HeroLvl, HeroStats } from './entity/hero/hero.model';
+import { Hero, HeroLvl, HeroStats, HeroTechnique } from './entity/hero/hero.model';
 import { HeroSkills } from './entity/hero/hero-skills.model';
-import { HeroTechniques } from './entity/hero/hero-technique.model';
 import { SkillModule } from './entity/skill/skill.module';
 import { Skill } from './entity/skill/skill.model';
 import { TechniqueModule } from './entity/technique/technique.module';
@@ -26,15 +25,18 @@ import { Item } from './entity/item/item.model';
 import { ItemModule } from './entity/item/item.module';
 import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './entity/enemy/enemy.model';
 import { EnemyModule } from './entity/enemy/enemy.module';
+import { Event, EventTrigger } from './entity/event/event.model';
+import { EventModule } from './entity/event/event.module';
 
 const entity = [
   User,
-  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechniques,
+  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique,
   Race, RaceBonuses,
   Class, ClassBonuses,
   Technique, TechniqueEffect,
   Effect, Item, Lvl, Skill, Statistic,
   Enemy, EnemyStats, EnemyWeapon, EnemyTechnique,
+  Event, EventTrigger
 ];
 
 @Module({
@@ -62,6 +64,7 @@ const entity = [
     StatisticModule,
     ItemModule,
     EnemyModule,
+    EventModule
   ],
   controllers: [AppController],
   providers: [AppService],

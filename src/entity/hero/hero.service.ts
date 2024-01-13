@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Hero, HeroLvl, HeroStats } from './hero.model';
+import { Hero, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
 import { HeroSkills } from './hero-skills.model';
-import { HeroTechniques } from './hero-technique.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
+import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
 
 @Injectable()
 export class HeroService {
@@ -13,7 +13,7 @@ export class HeroService {
     @InjectRepository(HeroStats) private heroStatsRepository: Repository<HeroStats>,
     @InjectRepository(HeroSkills) private heroSkillsRepository: Repository<HeroSkills>,
     @InjectRepository(HeroLvl) private heroLvlRepository: Repository<HeroLvl>,
-    @InjectRepository(HeroTechniques) private heroTechniquesRepository: Repository<HeroTechniques>,
+    @InjectRepository(HeroTechnique) private heroTechniquesRepository: Repository<HeroTechnique>,
   ) {
   }
   
@@ -48,7 +48,42 @@ export class HeroService {
       .getOne();
   }
   
+  // Technique
   async getHeroTechniques(hero_id: number) {
-    return await this.heroTechniquesRepository.findOneBy({ hero_id });
+    const techniques = await this.heroTechniquesRepository.createQueryBuilder('ht')
+      .leftJoinAndSelect('ht.technique_id', 'technique')
+      .select(['*'])
+      .where('ht.hero_id = :hero_id', { hero_id: hero_id })
+      .getRawMany();
+    
+    if (!techniques) {
+      throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);
+    }
+    
+    return techniques;
+  }
+  
+  async getHeroTechnique(hero_id: number, technique_id: number) {
+    const technique = await this.heroTechniquesRepository.createQueryBuilder('ht')
+      .leftJoinAndSelect('ht.technique_id', 'technique')
+      .select(['*'])
+      .where('ht.hero_id = :hero_id', { hero_id: hero_id })
+      .andWhere('ht.technique_id = :technique_id', { technique_id: technique_id })
+      .getRawOne();
+    
+    if (!technique) {
+      throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);
+    }
+    
+    return technique;
+  }
+  
+  async createHeroTechnique(data: CreateHeroTechniqueDto, hero_id: number) {
+    const technique = this.heroTechniquesRepository.create({ ...data, hero_id: hero_id });
+    return this.heroTechniquesRepository.save(technique);
+  }
+  
+  async deleteHeroTechnique(hero_id: number, technique_id: number) {
+    return this.heroTechniquesRepository.delete({ hero_id: hero_id, technique_id: technique_id });
   }
 }
