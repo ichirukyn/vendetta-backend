@@ -10,7 +10,7 @@ import { HeroSkills } from './entity/hero/hero-skills.model';
 import { SkillModule } from './entity/skill/skill.module';
 import { Skill } from './entity/skill/skill.model';
 import { TechniqueModule } from './entity/technique/technique.module';
-import { Technique, TechniqueEffect } from './entity/technique/technique.model';
+import { Technique } from './entity/technique/technique.model';
 import { UsersModule } from './entity/users/users.module';
 import { User } from './entity/users/user.model';
 import { Race, RaceBonuses } from './entity/race/race.model';
@@ -27,6 +27,8 @@ import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './entity/enemy/e
 import { EnemyModule } from './entity/enemy/enemy.module';
 import { Event, EventTrigger } from './entity/event/event.model';
 import { EventModule } from './entity/event/event.module';
+import { TechniqueEffect } from './entity/technique/technique-effect.model';
+// import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
 
 const entity = [
   User,
@@ -36,7 +38,7 @@ const entity = [
   Technique, TechniqueEffect,
   Effect, Item, Lvl, Skill, Statistic,
   Enemy, EnemyStats, EnemyWeapon, EnemyTechnique,
-  Event, EventTrigger
+  Event, EventTrigger,
 ];
 
 @Module({
@@ -64,7 +66,7 @@ const entity = [
     StatisticModule,
     ItemModule,
     EnemyModule,
-    EventModule
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

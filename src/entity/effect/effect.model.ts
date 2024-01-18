@@ -45,4 +45,8 @@ export class Effect {
   @ApiProperty({ example: false })
   @Column()
   is_single: boolean;
+  
+  @ApiProperty({ example: false })
+  @Column({ default: false })
+  every_turn: boolean;
 }

@@ -18,13 +18,15 @@ export class HeroService {
   }
   
   async createHero(dto: CreateHeroDto) {
-    let user = this.heroesRepository.create(dto);
-    return await this.heroesRepository.save(user);
+    let hero = this.heroesRepository.create(dto);
+    return await this.heroesRepository.save(hero);
   }
   
-  async getHero(hero_id?: number, user_id?: number) {
-    if (user_id && user_id != 0) return await this.heroesRepository.findOneBy({ user_id: user_id });
-    if (hero_id) return await this.heroesRepository.findOneBy({ id: hero_id });
+  async getHero(hero_id?: number) {
+    return await this.heroesRepository.findOne({
+      relations: ['class', 'race', 'user'],
+      where: { id: hero_id },
+    });
   }
   
   async getHeroes() {
@@ -50,11 +52,10 @@ export class HeroService {
   
   // Technique
   async getHeroTechniques(hero_id: number) {
-    const techniques = await this.heroTechniquesRepository.createQueryBuilder('ht')
-      .leftJoinAndSelect('ht.technique_id', 'technique')
-      .select(['*'])
-      .where('ht.hero_id = :hero_id', { hero_id: hero_id })
-      .getRawMany();
+    const techniques = await this.heroTechniquesRepository.find({
+      relations: ['technique', 'technique.effects'],
+      where: { hero_id: hero_id },
+    });
     
     if (!techniques) {
       throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);

@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TechniqueService } from './technique.service';
-import { Technique, TechniqueEffect } from './technique.model';
+import { Technique } from './technique.model';
 import { CreateTechniqueDto } from './dto/create-technique';
 import { Effect } from '../effect/effect.model';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
+import { TechniqueEffect } from './technique-effect.model';
 
 @ApiTags('Technique')
 @Controller('technique')

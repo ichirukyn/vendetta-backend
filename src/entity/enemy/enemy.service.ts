@@ -18,7 +18,10 @@ export class EnemyService {
   }
   
   async getEnemy(enemy_id: number) {
-    const enemy = await this.enemiesRepository.findOneBy({ id: enemy_id });
+    const enemy = await this.enemiesRepository.findOne({
+      relations: ['race', 'class'],
+      where: { id: enemy_id }
+    });
     
     if (!enemy) {
       throw new HttpException('Пользователь не найден', HttpStatus.BAD_REQUEST);

@@ -37,4 +37,13 @@ export class UsersController {
   async getUsers() {
     return await this.userService.getUsers();
   }
+  
+  
+  // Hero
+  @ApiOperation({ summary: 'Получение пользователя по chat_id' })
+  @ApiResponse({ status: 200, type: User })
+  @Get('/:user_id/hero')
+  async getUserHero(@Param('user_id') user_id: number) {
+    return await this.userService.getUserHero(user_id);
+  }
 }

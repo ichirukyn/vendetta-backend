@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Effect } from '../effect/effect.model';
+import { TechniqueEffect } from './technique-effect.model';
 
 @Entity({ name: 'techniques' })
 export class Technique {
@@ -51,11 +51,8 @@ export class Technique {
   @ApiProperty({ example: 0 })
   @Column()
   cooldown: number;
+  
+  @OneToMany(() => TechniqueEffect, (effect) => effect.technique)
+  effects: TechniqueEffect[];
 }
 
-@Entity({ name: 'technique_bonuses' })
-export class TechniqueEffect extends Effect {
-  @ApiProperty({ example: 'Удар с ноги' })
-  @Column()
-  technique_id: number;
-}

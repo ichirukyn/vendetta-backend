@@ -7,51 +7,6 @@ import { Lvl } from '../lvl/lvl.model';
 import { Stats } from '../stats.model';
 import { Technique } from '../technique/technique.model';
 
-@Entity({ name: 'heroes' })
-export class Hero {
-  @ApiProperty({ example: 1 })
-  @PrimaryGeneratedColumn()
-  id: number;
-  
-  @ApiProperty({ example: 1 })
-  @Column()
-  @OneToOne(() => User)
-  user_id: number;
-  
-  @ApiProperty({ example: 'HeroName' })
-  @Column({ nullable: false })
-  name: string;
-  
-  @ApiProperty({ example: 'Курта' })
-  @Column({ default: false })
-  clan: string;
-  
-  @ApiProperty({ example: 'Люди = 1' })
-  @Column({ default: false })
-  @OneToOne(() => Race)
-  race_id: number;
-  
-  @ApiProperty({ example: 'Воин = 1' })
-  @Column({ default: false })
-  @OneToOne(() => Class)
-  class_id: number;
-  
-  @ApiProperty({ example: 'D' })
-  @Column({ nullable: false })
-  rank: string;
-  
-  @ApiProperty({ example: 5000 })
-  @Column({ nullable: false })
-  money: number;
-  
-  @ApiProperty({ example: 0 })
-  @Column({ nullable: false })
-  limit_os: number;
-  
-  @ApiProperty({ example: 0 })
-  @Column({ nullable: false })
-  evolution: number;
-}
 
 @Entity({ name: 'hero_stats' })
 export class HeroStats extends Stats {
@@ -71,6 +26,61 @@ export class HeroStats extends Stats {
   @ApiProperty({ example: 10 })
   @Column()
   free_stats: number;
+}
+
+@Entity({ name: 'heroes' })
+export class Hero {
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
+  
+  @Column()
+  user_id: number;
+  
+  @ApiProperty({ example: 'Люди = 1' })
+  @Column()
+  race_id: number;
+  
+  @ApiProperty({ example: 'Воин = 1' })
+  @Column()
+  class_id: number;
+  
+  @ApiProperty({ example: 1 })
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+  
+  @ApiProperty({ example: 'HeroName' })
+  @Column({ nullable: false })
+  name: string;
+  
+  @ApiProperty({ example: 'Курта' })
+  @Column()
+  clan: string;
+  
+  @OneToOne(() => Race)
+  @JoinColumn({ name: 'race_id' })
+  race: Race;
+  
+  @OneToOne(() => Class)
+  @JoinColumn({ name: 'class_id', referencedColumnName: 'id', foreignKeyConstraintName: 'class_id' })
+  class: Class;
+  
+  @ApiProperty({ example: 'D' })
+  @Column({ nullable: false })
+  rank: string;
+  
+  @ApiProperty({ example: 5000 })
+  @Column({ nullable: false })
+  money: number;
+  
+  @ApiProperty({ example: 0 })
+  @Column({ nullable: false })
+  limit_os: number;
+  
+  @ApiProperty({ example: 0 })
+  @Column({ nullable: false })
+  evolution: number;
 }
 
 
@@ -105,13 +115,15 @@ export class HeroTechnique {
   id: number;
   
   @ApiProperty({ example: 1 })
-  @OneToOne(() => Hero)
-  @JoinColumn({name: 'hero_id', referencedColumnName: 'id', foreignKeyConstraintName: 'hero_id'})
+  @Column()
   hero_id: number;
   
-  @ApiProperty({ example: 1 })
   @OneToOne(() => Technique)
-  @JoinColumn({name: 'technique_id', referencedColumnName: 'id', foreignKeyConstraintName: 'technique_id'})
+  @JoinColumn({ name: 'technique_id' })
+  technique: Technique;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
   technique_id: number;
   
   @ApiProperty({ example: 10 })

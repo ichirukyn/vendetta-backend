@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HeroService } from './hero.service';
 import { HeroSkills } from './hero-skills.model';
@@ -24,8 +24,8 @@ export class HeroController {
   @ApiOperation({ summary: 'Получение героя по user_id' })
   @ApiResponse({ status: 200, type: Hero })
   @Get('/:hero_id')
-  async getHero(@Param('hero_id') hero_id: number, @Query('user_id') user_id: number) {
-    return await this.heroService.getHero(hero_id, user_id);
+  async getHero(@Param('hero_id') hero_id: number) {
+    return await this.heroService.getHero(hero_id);
   }
   
   @ApiOperation({ summary: 'Создание героя' })

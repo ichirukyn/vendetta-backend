@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Technique, TechniqueEffect } from './technique.model';
+import { Technique } from './technique.model';
 import { CreateTechniqueDto } from './dto/create-technique';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
+import { TechniqueEffect } from './technique-effect.model';
 
 @Injectable()
 export class TechniqueService {
@@ -14,7 +15,7 @@ export class TechniqueService {
   }
   
   async getTechniques() {
-    return await this.techniqueRepository.find();
+    return await this.techniqueRepository.find({ order: { id: 'ASC' } });
   }
   
   async getTechnique(technique_id: number) {
@@ -38,7 +39,10 @@ export class TechniqueService {
   }
   
   async getTechniqueEffect(technique_id: number) {
-    return await this.techniqueEffectRepository.findBy({ technique_id: technique_id });
+    return await this.techniqueEffectRepository.find({
+      where: { technique_id: technique_id },
+      order: { id: 'ASC' },
+    });
   }
   
   async updateTechniqueEffect(techniqueEffectData: TechniqueEffect, effect_id: number, technique_id: number) {
