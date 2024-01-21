@@ -21,6 +21,12 @@ export class Enemy {
   @Column({ nullable: true })
   rank: string;
   
+  @Column()
+  race_id: number;
+  
+  @Column()
+  class_id: number;
+  
   @ApiProperty({ example: 'Люди = 1' })
   @OneToOne(() => Race)
   @JoinColumn({ name: 'race_id' })

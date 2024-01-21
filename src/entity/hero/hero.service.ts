@@ -65,12 +65,10 @@ export class HeroService {
   }
   
   async getHeroTechnique(hero_id: number, technique_id: number) {
-    const technique = await this.heroTechniquesRepository.createQueryBuilder('ht')
-      .leftJoinAndSelect('ht.technique_id', 'technique')
-      .select(['*'])
-      .where('ht.hero_id = :hero_id', { hero_id: hero_id })
-      .andWhere('ht.technique_id = :technique_id', { technique_id: technique_id })
-      .getRawOne();
+    const technique = await this.heroTechniquesRepository.findOne({
+      relations: ['technique'],
+      where: { technique_id: technique_id, hero_id: hero_id },
+    });
     
     if (!technique) {
       throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);

@@ -35,15 +35,15 @@ export class Stats {
   submission: number;
   
   @ApiProperty({ example: 0.05 })
-  @Column()
+  @Column({type: "double precision"})
   crit_rate: number;
   
   @ApiProperty({ example: 0.5 })
-  @Column()
+  @Column({type: "double precision"})
   crit_damage: number;
   
   @ApiProperty({ example: 0.1 })
-  @Column()
+  @Column({type: "double precision"})
   resist: number;
   
   @ApiProperty({ example: 7 })
