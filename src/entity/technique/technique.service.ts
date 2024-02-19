@@ -5,6 +5,7 @@ import { Technique } from './technique.model';
 import { CreateTechniqueDto } from './dto/create-technique';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
 import { TechniqueEffect } from './technique-effect.model';
+import { TechniqueQueryDTO } from './technique.controller';
 
 @Injectable()
 export class TechniqueService {
@@ -14,12 +15,19 @@ export class TechniqueService {
   ) {
   }
   
-  async getTechniques() {
-    return await this.techniqueRepository.find({ order: { id: 'ASC' } });
+  async getTechniques({ hidden = false, author = undefined, race_id, class_id }: TechniqueQueryDTO) {
+    return await this.techniqueRepository.find({
+      relations: ['effects'],
+      where: { hidden: hidden ? undefined : hidden, author: author, class_id: class_id, race_id: race_id},
+      order: { id: 'ASC' }
+    });
   }
   
   async getTechnique(technique_id: number) {
-    return await this.techniqueRepository.findOneBy({ id: technique_id });
+    return await this.techniqueRepository.findOne({
+      relations: ['effects'],
+      where: { id: technique_id }
+    });
   }
   
   async createTechnique(data: CreateTechniqueDto) {

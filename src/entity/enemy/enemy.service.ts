@@ -1,11 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './enemy.model';
+import { Enemy, EnemyItem, EnemyTechnique, EnemyWeapon } from './enemy.model';
 import { CreateEnemyDto } from './dto/create-enemy';
 import { CreateEnemyStatsDto } from './dto/create-enemy-stats';
 import { CreateEnemyWeaponDto } from './dto/create-enemy-weapon';
 import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
+import { EnemyStats } from './enemy-stats.model';
+import { HeroService } from '../hero/hero.service';
+import { CreateHeroItemDto } from '../hero/dto/create-hero-item';
 
 @Injectable()
 export class EnemyService {
@@ -14,13 +17,15 @@ export class EnemyService {
     @InjectRepository(EnemyStats) private enemyStatsRepository: Repository<EnemyStats>,
     @InjectRepository(EnemyWeapon) private enemyWeaponRepository: Repository<EnemyWeapon>,
     @InjectRepository(EnemyTechnique) private enemyTechniqueRepository: Repository<EnemyTechnique>,
+    @InjectRepository(EnemyItem) private enemyItemRepository: Repository<EnemyItem>,
+    @Inject(HeroService) private heroService: HeroService,
   ) {
   }
   
   async getEnemy(enemy_id: number) {
     const enemy = await this.enemiesRepository.findOne({
       relations: ['race', 'class'],
-      where: { id: enemy_id }
+      where: { id: enemy_id },
     });
     
     if (!enemy) {
@@ -31,7 +36,9 @@ export class EnemyService {
   }
   
   async getEnemies() {
-    return await this.enemiesRepository.find();
+    return await this.enemiesRepository.find({
+      relations: ['race', 'class', 'stats'],
+    });
   }
   
   async createEnemy(data: CreateEnemyDto) {
@@ -49,7 +56,7 @@ export class EnemyService {
   
   // Stats
   async getEnemyStats(enemy_id: number) {
-    return await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
+    return await this.enemyStatsRepository.findOneBy({ enemy: { id: enemy_id } });
   }
   
   async createEnemyStats(data: CreateEnemyStatsDto, enemy_id: number) {
@@ -58,7 +65,13 @@ export class EnemyService {
   }
   
   async editEnemyStats(data: CreateEnemyStatsDto, enemy_id: number) {
-    return this.enemyStatsRepository.update({ enemy_id: enemy_id }, data);
+    let stats = await this.enemyStatsRepository.update({ enemy_id: enemy_id }, data);
+    
+    if (!stats) {
+      stats = await this.enemyStatsRepository.save({ ...stats, enemy_id: enemy_id });
+    }
+    
+    return stats;
   }
   
   async deleteEnemyStats(enemy_id: number) {
@@ -68,7 +81,7 @@ export class EnemyService {
   
   // Weapon
   async getEnemyWeapon(enemy_id: number) {
-    return await this.enemyWeaponRepository.findOneBy({ enemy_id: enemy_id }) || {}
+    return await this.enemyWeaponRepository.findOneBy({ enemy_id: enemy_id }) || {};
   }
   
   async createEnemyWeapon(data: CreateEnemyWeaponDto, enemy_id: number) {
@@ -83,7 +96,10 @@ export class EnemyService {
   
   // Technique
   async getEnemyTechniques(enemy_id: number) {
-    return await this.enemyTechniqueRepository.findBy({ enemy_id: enemy_id });
+    return await this.enemyTechniqueRepository.find({
+      relations: ['technique', 'technique.effects'],
+      where: { enemy_id: enemy_id },
+    });
   }
   
   async getEnemyTechnique(enemy_id: number, technique_id: number) {
@@ -101,5 +117,61 @@ export class EnemyService {
   
   async deleteEnemyTechnique(enemy_id: number, technique_id: number) {
     return this.enemyTechniqueRepository.delete({ enemy_id: enemy_id, technique_id: technique_id });
+  }
+  
+  
+  // Items
+  async getEnemyItems(enemy_id: number) {
+    return await this.enemyItemRepository.find({
+      relations: ['item'],
+      where: { enemy_id: enemy_id },
+    });
+  }
+  
+  async getEnemyLoot(enemy_id: number, hero_id: number) {
+    const lootList: EnemyItem[] = [];
+    const itemList = await this.enemyItemRepository.find({
+      relations: ['item'],
+      where: { enemy_id: enemy_id },
+    });
+    
+    itemList.forEach((item) => {
+      let rand = Math.random();
+      if (item.chance >= rand) {
+        item.count = Math.round(Math.random() * (item.count_max - item.count_min) + item.count_min);
+        lootList.push(item);
+        
+        if (hero_id) {
+          let data: CreateHeroItemDto = {
+            hero_id: hero_id,
+            count: item.count,
+            item_id: item.item_id,
+            is_stack: true,
+            is_transfer: false,
+          };
+          this.heroService.createHeroItem(data, hero_id);
+        }
+      }
+    });
+    
+    
+    return lootList;
+  }
+  
+  async getEnemyItem(enemy_id: number, item_id: number) {
+    return await this.enemyItemRepository.findOneBy({ enemy_id: enemy_id, item_id: item_id });
+  }
+  
+  async createEnemyItem(data: CreateEnemyTechniqueDto, enemy_id: number) {
+    const technique = this.enemyItemRepository.create({ ...data, enemy_id: enemy_id });
+    return this.enemyItemRepository.save(technique);
+  }
+  
+  async editEnemyItem(data: CreateEnemyTechniqueDto, enemy_id: number, item_id: number) {
+    return this.enemyItemRepository.update({ enemy_id: enemy_id, item_id: item_id }, data);
+  }
+  
+  async deleteEnemyItem(enemy_id: number, item_id: number) {
+    return this.enemyItemRepository.delete({ enemy_id: enemy_id, item_id: item_id });
   }
 }

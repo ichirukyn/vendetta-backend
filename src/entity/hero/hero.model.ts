@@ -6,6 +6,7 @@ import { Class } from '../class/class.model';
 import { Lvl } from '../lvl/lvl.model';
 import { Stats } from '../stats.model';
 import { Technique } from '../technique/technique.model';
+import { Item } from '../item/item.model';
 
 
 @Entity({ name: 'hero_stats' })
@@ -129,4 +130,36 @@ export class HeroTechnique {
   @ApiProperty({ example: 10 })
   @Column()
   lvl: number;
+}
+
+
+@Entity({ name: 'hero_inventory' })
+export class HeroItem {
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  hero_id: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  item_id: number;
+  
+  @OneToOne(() => Item)
+  @JoinColumn({ name: 'item_id' })
+  item: Item;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  count: number;
+  
+  @ApiProperty({ example: true })
+  @Column()
+  is_stack: boolean;
+  
+  @ApiProperty({ example: true })
+  @Column()
+  is_transfer: boolean;
 }

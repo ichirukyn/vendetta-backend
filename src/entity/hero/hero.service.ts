@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Hero, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
 import { HeroSkills } from './hero-skills.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
+import { CreateHeroItemDto } from './dto/create-hero-item';
 
 @Injectable()
 export class HeroService {
@@ -14,6 +15,7 @@ export class HeroService {
     @InjectRepository(HeroSkills) private heroSkillsRepository: Repository<HeroSkills>,
     @InjectRepository(HeroLvl) private heroLvlRepository: Repository<HeroLvl>,
     @InjectRepository(HeroTechnique) private heroTechniquesRepository: Repository<HeroTechnique>,
+    @InjectRepository(HeroItem) private heroItemsRepository: Repository<HeroItem>,
   ) {
   }
   
@@ -84,5 +86,54 @@ export class HeroService {
   
   async deleteHeroTechnique(hero_id: number, technique_id: number) {
     return this.heroTechniquesRepository.delete({ hero_id: hero_id, technique_id: technique_id });
+  }
+  
+  // Item
+  async getHeroItems(hero_id: number) {
+    const items = await this.heroItemsRepository.find({
+      relations: ['item'],
+      where: { hero_id: hero_id },
+    });
+    
+    if (!items) {
+      throw new HttpException('Предметы не найдены', HttpStatus.BAD_REQUEST);
+    }
+    
+    return items;
+  }
+  
+  async getHeroItem(hero_id: number, item_id: number) {
+    const item = await this.heroItemsRepository.findOne({
+      relations: ['technique'],
+      where: { item_id: item_id, hero_id: hero_id },
+    });
+    
+    if (!item) {
+      throw new HttpException('Предмет не найден', HttpStatus.BAD_REQUEST);
+    }
+    
+    return item;
+  }
+  
+  async createHeroItem(data: CreateHeroItemDto, hero_id: number) {
+    this.heroItemsRepository.findOneBy({ item_id: data.item_id, hero_id: hero_id }).then((item) => {
+      if (item?.item_id && item.is_stack) {
+        item.count += data.count;
+        this.heroItemsRepository.update({ item_id: item.item_id, hero_id: item.hero_id }, { ...item, hero_id: hero_id });
+      } else {
+        const item = this.heroItemsRepository.create({ ...data, hero_id: hero_id });
+        return this.heroItemsRepository.save(item);
+      }
+    });
+  }
+  
+  async createHeroItems(data: [CreateHeroItemDto], hero_id: number) {
+    data.forEach((item) => {
+      this.createHeroItem(item, hero_id);
+    });
+  }
+  
+  async deleteHeroItem(hero_id: number, item_id: number) {
+    return this.heroItemsRepository.delete({ hero_id: hero_id, item_id: item_id });
   }
 }

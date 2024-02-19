@@ -28,6 +28,10 @@ export class Technique {
   @Column({ nullable: true })
   type_damage: string;
   
+  @ApiProperty({ example: 'Magic/Stenght/Dextery' })
+  @Column({ nullable: true })
+  type_attack: string;
+  
   @ApiProperty({ example: 'melee | distant' })
   @Column({ nullable: true })
   distance: string;
@@ -44,6 +48,10 @@ export class Technique {
   @Column()
   race_id: number;
   
+  @ApiProperty({ example: 1 })
+  @Column({ nullable: true })
+  author: number;
+  
   @ApiProperty({ example: 'attack' })
   @Column()
   type: string;
@@ -54,5 +62,9 @@ export class Technique {
   
   @OneToMany(() => TechniqueEffect, (effect) => effect.technique)
   effects: TechniqueEffect[];
+  
+  @ApiProperty({ example: false })
+  @Column({ default: false })
+  hidden: boolean;
 }
 

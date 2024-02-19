@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as process from 'process';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HeroModule } from './entity/hero/hero.module';
-import { Hero, HeroLvl, HeroStats, HeroTechnique } from './entity/hero/hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './entity/hero/hero.model';
 import { HeroSkills } from './entity/hero/hero-skills.model';
 import { SkillModule } from './entity/skill/skill.module';
 import { Skill } from './entity/skill/skill.model';
@@ -23,21 +23,22 @@ import { StatisticModule } from './entity/statistic/statistic.module';
 import { Effect } from './entity/effect/effect.model';
 import { Item } from './entity/item/item.model';
 import { ItemModule } from './entity/item/item.module';
-import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './entity/enemy/enemy.model';
+import { Enemy, EnemyItem, EnemyTechnique, EnemyWeapon } from './entity/enemy/enemy.model';
 import { EnemyModule } from './entity/enemy/enemy.module';
 import { Event, EventTrigger } from './entity/event/event.model';
 import { EventModule } from './entity/event/event.module';
 import { TechniqueEffect } from './entity/technique/technique-effect.model';
+import { EnemyStats } from './entity/enemy/enemy-stats.model';
 // import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
 
 const entity = [
   User,
-  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique,
+  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique, HeroItem,
   Race, RaceBonuses,
   Class, ClassBonuses,
   Technique, TechniqueEffect,
   Effect, Item, Lvl, Skill, Statistic,
-  Enemy, EnemyStats, EnemyWeapon, EnemyTechnique,
+  Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem,
   Event, EventTrigger,
 ];
 

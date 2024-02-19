@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Enemy, EnemyStats, EnemyTechnique, EnemyWeapon } from './enemy.model';
+import { Enemy, EnemyItem, EnemyTechnique, EnemyWeapon } from './enemy.model';
 import { EnemyService } from './enemy.service';
 import { CreateEnemyDto } from './dto/create-enemy';
 import { CreateEnemyStatsDto } from './dto/create-enemy-stats';
 import { CreateEnemyWeaponDto } from './dto/create-enemy-weapon';
 import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
+import { EnemyStats } from './enemy-stats.model';
 
 @ApiTags('Enemy')
 @Controller('/enemy')
@@ -110,9 +111,9 @@ export class EnemyController {
     return await this.enemyService.getEnemyTechniques(enemy_id);
   }
   
-  @ApiOperation({ summary: 'Получение характеристик противника по id' })
+  @ApiOperation({ summary: 'Получение техники противника по id' })
   @ApiResponse({ status: 200, type: EnemyTechnique })
-  @Get('/:enemy_id/technique/:item_id')
+  @Get('/:enemy_id/technique/:technique_id')
   async getEnemyTechnique(@Param('enemy_id') enemy_id: number, @Param('technique_id') technique_id: number) {
     return await this.enemyService.getEnemyTechnique(enemy_id, technique_id);
   }
@@ -136,5 +137,49 @@ export class EnemyController {
   @Delete('/:enemy_id/technique/:technique_id')
   async deleteEnemyTechnique(@Param('enemy_id') enemy_id: number, @Param('technique_id') technique_id: number) {
     return await this.enemyService.deleteEnemyTechnique(enemy_id, technique_id);
+  }
+  
+  
+  // Item
+  @ApiOperation({ summary: 'Получение списка предметов противника' })
+  @ApiResponse({ status: 200, type: [EnemyItem] })
+  @Get('/:enemy_id/item')
+  async getEnemyItems(@Param('enemy_id') enemy_id: number) {
+    return await this.enemyService.getEnemyItems(enemy_id);
+  }
+  
+  @ApiOperation({ summary: 'Получение списка предметов противника' })
+  @ApiResponse({ status: 200, type: [EnemyItem] })
+  @Get('/:enemy_id/loot')
+  async getEnemyLoot(@Param('enemy_id') enemy_id: number, @Query('hero_id') hero_id: number | undefined) {
+    return await this.enemyService.getEnemyLoot(enemy_id, hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Получение предмета противника по id' })
+  @ApiResponse({ status: 200, type: EnemyItem })
+  @Get('/:enemy_id/item/:item_id')
+  async getEnemyItem(@Param('enemy_id') enemy_id: number, @Param('item_id') item_id: number) {
+    return await this.enemyService.getEnemyItem(enemy_id, item_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание предмета противника' })
+  @ApiResponse({ status: 200, type: EnemyItem })
+  @Post('/:enemy_id/item')
+  async createEnemyItem(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number) {
+    return await this.enemyService.createEnemyItem(createEnemyTechniqueDto, enemy_id);
+  }
+  
+  @ApiOperation({ summary: 'Обновление предмета противника' })
+  @ApiResponse({ status: 200, type: EnemyItem })
+  @Put('/:enemy_id/item/:item_id')
+  async editEnemyItem(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number, @Param('item_id') item_id: number) {
+    return await this.enemyService.editEnemyItem(createEnemyTechniqueDto, enemy_id, item_id);
+  }
+  
+  @ApiOperation({ summary: 'Удаление предмета противника' })
+  @ApiResponse({ status: 200 })
+  @Delete('/:enemy_id/item/:item_id')
+  async deleteEnemyItem(@Param('enemy_id') enemy_id: number, @Param('item_id') item_id: number) {
+    return await this.enemyService.deleteEnemyItem(enemy_id, item_id);
   }
 }

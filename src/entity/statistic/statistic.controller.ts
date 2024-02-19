@@ -16,7 +16,7 @@ export class StatisticController {
     return await this.statisticService.getStatistic(hero_id);
   }
   
-  @ApiOperation({ summary: 'Получение статистики игрока' })
+  @ApiOperation({ summary: 'Получение статистик игроков' })
   @ApiResponse({ status: 200, type: [Statistic] })
   @Get('/')
   async getStatistics() {

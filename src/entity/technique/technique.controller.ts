@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TechniqueService } from './technique.service';
 import { Technique } from './technique.model';
@@ -6,6 +6,26 @@ import { CreateTechniqueDto } from './dto/create-technique';
 import { Effect } from '../effect/effect.model';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
 import { TechniqueEffect } from './technique-effect.model';
+import { IsBoolean, IsInt, IsOptional } from 'class-validator';
+
+export abstract class TechniqueQueryDTO {
+  @IsBoolean()
+  @IsOptional()
+  hidden?: boolean;
+  
+  @IsInt()
+  @IsOptional()
+  race_id?: number;
+  
+  @IsInt()
+  @IsOptional()
+  class_id?: number;
+  
+  @IsInt()
+  @IsOptional()
+  author?: number;
+}
+
 
 @ApiTags('Technique')
 @Controller('technique')
@@ -16,8 +36,8 @@ export class TechniqueController {
   @ApiOperation({ summary: 'Получение списка техник' })
   @ApiResponse({ status: 200, type: [Technique] })
   @Get()
-  async getTechniques() {
-    return await this.techniqueService.getTechniques();
+  async getTechniques(@Query() techniqueQueryDTO: TechniqueQueryDTO) {
+    return await this.techniqueService.getTechniques(techniqueQueryDTO);
   }
   
   @ApiOperation({ summary: 'Создание техники' })

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Statistic } from './statistic.model';
@@ -11,10 +11,10 @@ export class StatisticService {
   }
   
   async getStatistic(hero_id: number) {
-    const statistics = await this.statisticsRepository.findOneBy({ hero_id: hero_id });
+    let statistics = await this.statisticsRepository.findOneBy({ hero_id: hero_id });
     
     if (!statistics) {
-      await this.statisticsRepository.save({ hero_id: hero_id });
+      statistics = await this.statisticsRepository.save({ hero_id: hero_id });
     }
     
     return statistics;

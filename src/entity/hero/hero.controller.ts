@@ -2,11 +2,12 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HeroService } from './hero.service';
 import { HeroSkills } from './hero-skills.model';
-import { Hero, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
 import { User } from '../users/user.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { EnemyTechnique } from '../enemy/enemy.model';
 import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
+import { CreateHeroItemDto } from './dto/create-hero-item';
 
 @ApiTags('Hero')
 @Controller('/hero')
@@ -79,14 +80,51 @@ export class HeroController {
   @ApiOperation({ summary: 'Создание техники игрока' })
   @ApiResponse({ status: 200, type: EnemyTechnique })
   @Post('/:hero_id/technique')
-  async createEnemyTechnique(@Body() createHeroTechniqueDto: CreateHeroTechniqueDto, @Param('hero_id') hero_id: number) {
+  async createHeroTechnique(@Body() createHeroTechniqueDto: CreateHeroTechniqueDto, @Param('hero_id') hero_id: number) {
     return await this.heroService.createHeroTechnique(createHeroTechniqueDto, hero_id);
   }
   
   @ApiOperation({ summary: 'Создание техники игрока' })
   @ApiResponse({ status: 200, type: EnemyTechnique })
   @Delete('/:hero_id/technique/:technique_id')
-  async deleteEnemyTechnique(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
+  async deleteHeroTechnique(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
     return await this.heroService.deleteHeroTechnique(hero_id, technique_id);
+  }
+  
+  
+  // Item
+  @ApiOperation({ summary: 'Получение предматов игрока' })
+  @ApiResponse({ status: 200, type: [HeroItem] })
+  @Get('/:hero_id/item')
+  async getHeroItems(@Param('hero_id') hero_id: number) {
+    return await this.heroService.getHeroItems(hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Получение предмата по id, игрока' })
+  @ApiResponse({ status: 200, type: HeroItem })
+  @Get('/:hero_id/item/:technique_id')
+  async getHeroItem(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
+    return await this.heroService.getHeroItem(hero_id, technique_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiResponse({ status: 200, type: HeroItem })
+  @Post('/:hero_id/item')
+  async createHeroItem(@Body() createHeroItemDto: CreateHeroItemDto, @Param('hero_id') hero_id: number) {
+    return await this.heroService.createHeroItem(createHeroItemDto, hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiResponse({ status: 200, type: HeroItem })
+  @Post('/:hero_id/items')
+  async createHeroItems(@Body() createHeroItemDto: [CreateHeroItemDto], @Param('hero_id') hero_id: number) {
+    return await this.heroService.createHeroItems(createHeroItemDto, hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiResponse({ status: 200, type: HeroItem })
+  @Delete('/:hero_id/item/:technique_id')
+  async deleteHeroItem(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
+    return await this.heroService.deleteHeroItem(hero_id, technique_id);
   }
 }
