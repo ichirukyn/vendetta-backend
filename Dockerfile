@@ -4,13 +4,13 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN yarn install
+RUN npm install
 
 COPY . .
 
 EXPOSE 3000
-RUN yarn run build
+RUN npm run build
 
 # Start the server using the production build
-CMD [ "yarn", "run", "start:prod" ]
+CMD [ "npm", "run", "start:prod" ]
 
