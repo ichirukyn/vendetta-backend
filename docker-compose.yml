@@ -11,3 +11,6 @@ services:
         - postgresDB:/var/lib/postgres
 volumes:
   postgresDB:
+
+networks:
+  tg:
