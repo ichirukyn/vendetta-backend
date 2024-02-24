@@ -18,7 +18,7 @@ export class ArenaFloorService {
     const floor = await this.floorsRepository.findOne({
       relations: ['enemies', 'enemies.enemy', 'enemies.enemy.race', 'enemies.enemy.class', 'enemies.enemy.stats'],
       where: { id: floor_id },
-      order: { enemies: { enemy: { stats: { lvl: 'ASC' } } } },
+      order: { id: 'asc' },
     });
     
     if (!floor) {
@@ -31,7 +31,7 @@ export class ArenaFloorService {
   async getArenaFloors() {
     return await this.floorsRepository.find({
       relations: ['enemies', 'enemies.enemy', 'enemies.enemy.race', 'enemies.enemy.class', 'enemies.enemy.stats'],
-      order: { enemies: { enemy: { stats: { lvl: 'ASC' } } } },
+      order: { id: 'asc' },
     });
   }
   
@@ -81,7 +81,7 @@ export class ArenaFloorService {
     return this.floorsEnemyRepository.update({ id: floor_enemy_id, floor_id: floor_id }, { ...data, id: floor_enemy_id });
   }
   
-  async deleteArenaFloorEnemy(floor_id: number, floor_enemy_id: number) {
-    return this.floorsEnemyRepository.delete({ id: floor_enemy_id, floor_id: floor_id });
+  async deleteArenaFloorEnemy(floor_id: number, enemy_id: number) {
+    return this.floorsEnemyRepository.delete({ enemy_id: enemy_id, floor_id: floor_id });
   }
 }
