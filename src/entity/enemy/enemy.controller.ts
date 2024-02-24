@@ -7,6 +7,7 @@ import { CreateEnemyStatsDto } from './dto/create-enemy-stats';
 import { CreateEnemyWeaponDto } from './dto/create-enemy-weapon';
 import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
 import { EnemyStats } from './enemy-stats.model';
+import { EnemyTeam } from './enemy-team';
 
 @ApiTags('Enemy')
 @Controller('/enemy')
@@ -181,5 +182,42 @@ export class EnemyController {
   @Delete('/:enemy_id/item/:item_id')
   async deleteEnemyItem(@Param('enemy_id') enemy_id: number, @Param('item_id') item_id: number) {
     return await this.enemyService.deleteEnemyItem(enemy_id, item_id);
+  }
+  
+  
+  // Team
+  @ApiOperation({ summary: 'Получение списка предметов противника' })
+  @ApiResponse({ status: 200, type: [EnemyTeam] })
+  @Get('/:enemy_id/team/:team_id')
+  async getEnemyTeams(@Param('enemy_id') enemy_id: number) {
+    return await this.enemyService.getEnemyTeams(enemy_id);
+  }
+  
+  @ApiOperation({ summary: 'Получение списка предметов противника' })
+  @ApiResponse({ status: 200, type: EnemyTeam })
+  @Get('/:enemy_id/team/:team_id')
+  async getEnemyTeam(@Param('enemy_id') enemy_id: number, @Param('team_id') team_id: number) {
+    return await this.enemyService.getEnemyTeam(enemy_id, team_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание предмета противника' })
+  @ApiResponse({ status: 200, type: EnemyTeam })
+  @Post('/:enemy_id/team')
+  async createEnemyTeam(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number) {
+    return await this.enemyService.createEnemyTeam(createEnemyTechniqueDto, enemy_id);
+  }
+  
+  @ApiOperation({ summary: 'Обновление предмета противника' })
+  @ApiResponse({ status: 200, type: EnemyTeam })
+  @Put('/:enemy_id/team/:team_id')
+  async editEnemyTeam(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number, @Param('team_id') team_id: number) {
+    return await this.enemyService.editEnemyTeam(createEnemyTechniqueDto, enemy_id, team_id);
+  }
+  
+  @ApiOperation({ summary: 'Удаление предмета противника' })
+  @ApiResponse({ status: 200 })
+  @Delete('/:enemy_id/team/:team_id')
+  async deleteEnemyTeam(@Param('enemy_id') enemy_id: number, @Param('team_id') team_id: number) {
+    return await this.enemyService.deleteEnemyTeam(enemy_id, team_id);
   }
 }

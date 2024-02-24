@@ -32,6 +32,9 @@ import { EnemyStats } from './entity/enemy/enemy-stats.model';
 import { ArenaFloor } from './entity/arena/arena.model';
 import { ArenaFloorModule } from './entity/arena/arena.module';
 import { ArenaFloorEnemy } from './entity/arena/floor.model';
+import { EnemyTeam } from './entity/enemy/enemy-team';
+import { Team } from './entity/team/team.model';
+import { TeamModule } from './entity/team/team.module';
 // import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
 
 const entity = [
@@ -41,8 +44,9 @@ const entity = [
   Race, RaceBonuses,
   Class, ClassBonuses,
   Technique, TechniqueEffect,
+  Team,
   Effect, Item, Lvl, Skill, Statistic,
-  Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem,
+  Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem, EnemyTeam,
   Event, EventTrigger,
 ];
 
@@ -69,6 +73,7 @@ const entity = [
     RaceModule,
     ClassModule,
     TechniqueModule,
+    TeamModule,
     StatisticModule,
     ItemModule,
     EnemyModule,

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 import { ApiProperty } from '@nestjs/swagger';
 import { Enemy } from '../enemy/enemy.model';
 import { ArenaFloor } from './arena.model';
+import { EnemyTeam } from '../enemy/enemy-team';
 
 @Entity({ name: 'floor_enemies' })
 export class ArenaFloorEnemy {
@@ -21,15 +22,15 @@ export class ArenaFloorEnemy {
   @Column()
   team_id: number;
   
-  @OneToOne(() => Enemy)
-  @JoinColumn({ name: 'enemy_id' })
-  enemy: Enemy;
-  
   @ManyToOne(() => ArenaFloor, (arena) => arena.enemies)
   @JoinColumn({ name: 'floor_id' })
   floor: ArenaFloor;
   
-  // @OneToOne(() => EnemyTeam)
-  // @JoinColumn({ name: 'id' })
-  // teams: EnemyTeam;
+  @OneToOne(() => Enemy)
+  @JoinColumn({ name: 'enemy_id' })
+  enemy: Enemy;
+  
+  @OneToOne(() => EnemyTeam)
+  @JoinColumn({ name: 'team_id' })
+  teams: EnemyTeam;
 }

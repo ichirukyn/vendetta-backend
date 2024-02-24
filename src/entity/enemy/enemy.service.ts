@@ -10,6 +10,7 @@ import { EnemyStats } from './enemy-stats.model';
 import { HeroService } from '../hero/hero.service';
 import { CreateHeroItemDto } from '../hero/dto/create-hero-item';
 import { rangeWithNumber } from '../../common/utils';
+import { EnemyTeam } from './enemy-team';
 
 @Injectable()
 export class EnemyService {
@@ -19,6 +20,7 @@ export class EnemyService {
     @InjectRepository(EnemyWeapon) private enemyWeaponRepository: Repository<EnemyWeapon>,
     @InjectRepository(EnemyTechnique) private enemyTechniqueRepository: Repository<EnemyTechnique>,
     @InjectRepository(EnemyItem) private enemyItemRepository: Repository<EnemyItem>,
+    @InjectRepository(EnemyTeam) private enemyTeamRepository: Repository<EnemyTeam>,
     @Inject(HeroService) private heroService: HeroService,
   ) {
   }
@@ -171,6 +173,7 @@ export class EnemyService {
     return lootList;
   }
   
+  // Item
   async getEnemyItem(enemy_id: number, item_id: number) {
     return await this.enemyItemRepository.findOneBy({ enemy_id: enemy_id, item_id: item_id });
   }
@@ -186,5 +189,28 @@ export class EnemyService {
   
   async deleteEnemyItem(enemy_id: number, item_id: number) {
     return this.enemyItemRepository.delete({ enemy_id: enemy_id, item_id: item_id });
+  }
+  
+  
+  // Team
+  async getEnemyTeams(enemy_id: number) {
+    return await this.enemyTeamRepository.findBy({ enemy_id: enemy_id });
+  }
+  
+  async getEnemyTeam(enemy_id: number, team_id: number) {
+    return await this.enemyTeamRepository.findOneBy({ enemy_id: enemy_id, team_id: team_id });
+  }
+  
+  async createEnemyTeam(data: CreateEnemyTechniqueDto, enemy_id: number) {
+    const technique = this.enemyTeamRepository.create({ ...data, enemy_id: enemy_id });
+    return this.enemyTeamRepository.save(technique);
+  }
+  
+  async editEnemyTeam(data: CreateEnemyTechniqueDto, enemy_id: number, team_id: number) {
+    return this.enemyTeamRepository.update({ enemy_id: enemy_id, team_id: team_id }, data);
+  }
+  
+  async deleteEnemyTeam(enemy_id: number, team_id: number) {
+    return this.enemyTeamRepository.delete({ enemy_id: enemy_id, team_id: team_id });
   }
 }
