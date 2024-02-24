@@ -9,4 +9,6 @@ export class CreateHeroDto {
   readonly race_id: number;
   @ApiProperty({ example: 1 })
   readonly class_id: number;
+  @ApiProperty({ example: 5000 })
+  readonly money?: number;
 }

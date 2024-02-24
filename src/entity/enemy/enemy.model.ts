@@ -121,4 +121,12 @@ export class EnemyItem {
   @ApiProperty({ example: 1 })
   @Column({ default: 0 })
   count: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column({ default: 0 })
+  exp: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column({ default: 0 })
+  gold: number;
 }

@@ -29,9 +29,13 @@ import { Event, EventTrigger } from './entity/event/event.model';
 import { EventModule } from './entity/event/event.module';
 import { TechniqueEffect } from './entity/technique/technique-effect.model';
 import { EnemyStats } from './entity/enemy/enemy-stats.model';
+import { ArenaFloor } from './entity/arena/arena.model';
+import { ArenaFloorModule } from './entity/arena/arena.module';
+import { ArenaFloorEnemy } from './entity/arena/floor.model';
 // import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
 
 const entity = [
+  ArenaFloor, ArenaFloorEnemy,
   User,
   Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique, HeroItem,
   Race, RaceBonuses,
@@ -58,6 +62,7 @@ const entity = [
       logging: true,
       logNotifications: true,
     }),
+    ArenaFloorModule,
     UsersModule,
     HeroModule,
     SkillModule,

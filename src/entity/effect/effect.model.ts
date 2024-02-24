@@ -31,7 +31,7 @@ export class Effect {
   if: string;
   
   @ApiProperty({ example: '0/100/0.5' })
-  @Column()
+  @Column({ type: 'double precision', transformer: { from: value => parseFloat(value), to: value => value } })
   if_second: number;
   
   @ApiProperty({ example: 'my/enemy' })

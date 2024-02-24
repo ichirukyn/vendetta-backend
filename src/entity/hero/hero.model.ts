@@ -68,11 +68,11 @@ export class Hero {
   class: Class;
   
   @ApiProperty({ example: 'D' })
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: 'Редкий' })
   rank: string;
   
   @ApiProperty({ example: 5000 })
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: 5000 })
   money: number;
   
   @ApiProperty({ example: 0 })

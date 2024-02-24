@@ -9,6 +9,7 @@ import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
 import { EnemyStats } from './enemy-stats.model';
 import { HeroService } from '../hero/hero.service';
 import { CreateHeroItemDto } from '../hero/dto/create-hero-item';
+import { rangeWithNumber } from '../../common/utils';
 
 @Injectable()
 export class EnemyService {
@@ -135,11 +136,17 @@ export class EnemyService {
       where: { enemy_id: enemy_id },
     });
     
-    itemList.forEach((item) => {
+    for (const item of itemList) {
       let rand = Math.random();
       if (item.chance >= rand) {
         item.count = Math.round(Math.random() * (item.count_max - item.count_min) + item.count_min);
-        lootList.push(item);
+        item.gold = rangeWithNumber(item.gold, 0.1);
+        item.exp = rangeWithNumber(item.exp, 0.1);
+        
+        if (item.item.id === 0) {
+          item.gold = item.count;
+          item.count = 0;
+        }
         
         if (hero_id) {
           let data: CreateHeroItemDto = {
@@ -149,11 +156,17 @@ export class EnemyService {
             is_stack: true,
             is_transfer: false,
           };
-          this.heroService.createHeroItem(data, hero_id);
+          
+          const enemy = await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
+          if (item.count) await this.heroService.createHeroItem(data, hero_id);
+          await this.heroService.updateHeroMoney(hero_id, item.gold);
+          item.exp = await this.heroService.updateHeroExp(hero_id, enemy.lvl, item.exp);
+          lootList.push(item);
+        } else {
+          lootList.push(item);
         }
       }
-    });
-    
+    }
     
     return lootList;
   }

@@ -29,6 +29,13 @@ export class HeroController {
     return await this.heroService.getHero(hero_id);
   }
   
+  @ApiOperation({ summary: 'Получение героя по user_id' })
+  @ApiResponse({ status: 200, type: Hero })
+  @Get('/:hero_id')
+  async editHero(@Param('hero_id') hero_id: number, @Body() data: CreateHeroDto) {
+    return await this.heroService.updateHero(data, hero_id);
+  }
+  
   @ApiOperation({ summary: 'Создание героя' })
   @ApiResponse({ status: 200, type: User })
   @Post('/')

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
@@ -6,6 +6,7 @@ import { HeroSkills } from './hero-skills.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
 import { CreateHeroItemDto } from './dto/create-hero-item';
+import { exp_reward } from '../../common/utils/exp_reward';
 
 @Injectable()
 export class HeroService {
@@ -31,6 +32,21 @@ export class HeroService {
     });
   }
   
+  async updateHero(data: CreateHeroDto, hero_id: number) {
+    return this.heroesRepository.update({ id: hero_id }, { ...data, id: hero_id });
+  }
+  
+  async updateHeroMoney(hero_id: number, money: number) {
+    const hero = await this.heroesRepository.findOneBy({ id: hero_id });
+    console.log('GETMONEY, ', money);
+    console.log('ADDMONEY, ', hero.money + money);
+    if (hero.money + money >= 0) {
+      return this.heroesRepository.update({ id: hero_id }, { ...hero, money: hero.money + money });
+    } else {
+      throw new ConflictException('Недостаточно средств');
+    }
+  }
+  
   async getHeroes() {
     return await this.heroesRepository.find();
   }
@@ -43,6 +59,8 @@ export class HeroService {
     return await this.heroSkillsRepository.findOneBy({ hero_id });
   }
   
+  
+  // Lvl
   async getHeroLvl(hero_id: number) {
     return this.heroLvlRepository
       .createQueryBuilder('hero_level')
@@ -51,6 +69,16 @@ export class HeroService {
       .where({ hero_id: hero_id })
       .getOne();
   }
+  
+  async updateHeroExp(hero_id: number, enemy_lvl: number, exp: number) {
+    const lvl = await this.heroLvlRepository.findOneBy({ hero_id: hero_id });
+    const new_exp = exp_reward(lvl.exp, exp, enemy_lvl);
+    
+    await this.heroLvlRepository.update({ hero_id: hero_id }, { ...lvl, exp: new_exp });
+    
+    return new_exp - lvl.exp;
+  }
+  
   
   // Technique
   async getHeroTechniques(hero_id: number) {
