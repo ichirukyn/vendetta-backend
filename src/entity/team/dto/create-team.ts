@@ -8,7 +8,7 @@ export class CreateTeamDto {
   readonly name: string;
   
   @ApiProperty({ example: 0 })
-  readonly min_stats?: number;
+  readonly min_lvl?: number;
   
   @ApiProperty({ example: true })
   readonly is_private?: boolean;

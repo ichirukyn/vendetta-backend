@@ -17,7 +17,7 @@ export class Team {
   
   @ApiProperty({ example: 0 })
   @Column({ default: 0 })
-  min_stats: number;
+  min_lvl: number;
   
   @ApiProperty({ example: true })
   @Column({ default: true })

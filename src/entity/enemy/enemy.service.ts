@@ -27,8 +27,9 @@ export class EnemyService {
   
   async getEnemy(enemy_id: number) {
     const enemy = await this.enemiesRepository.findOne({
-      relations: ['race', 'class'],
+      relations: ['race', 'class', 'stats'],
       where: { id: enemy_id },
+      order: { stats: { lvl: 'asc' } },
     });
     
     if (!enemy) {
@@ -41,6 +42,7 @@ export class EnemyService {
   async getEnemies() {
     return await this.enemiesRepository.find({
       relations: ['race', 'class', 'stats'],
+      order: { stats: { lvl: 'asc' } },
     });
   }
   

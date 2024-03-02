@@ -188,7 +188,7 @@ export class EnemyController {
   // Team
   @ApiOperation({ summary: 'Получение списка предметов противника' })
   @ApiResponse({ status: 200, type: [EnemyTeam] })
-  @Get('/:enemy_id/team/:team_id')
+  @Get('/:enemy_id/team')
   async getEnemyTeams(@Param('enemy_id') enemy_id: number) {
     return await this.enemyService.getEnemyTeams(enemy_id);
   }
@@ -214,7 +214,7 @@ export class EnemyController {
     return await this.enemyService.editEnemyTeam(createEnemyTechniqueDto, enemy_id, team_id);
   }
   
-  @ApiOperation({ summary: 'Удаление предмета противника' })
+  @ApiOperation({ summary: 'Удаление противника из команды' })
   @ApiResponse({ status: 200 })
   @Delete('/:enemy_id/team/:team_id')
   async deleteEnemyTeam(@Param('enemy_id') enemy_id: number, @Param('team_id') team_id: number) {
