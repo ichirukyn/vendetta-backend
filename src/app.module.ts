@@ -35,6 +35,7 @@ import { ArenaFloorEnemy } from './entity/arena/floor.model';
 import { EnemyTeam } from './entity/enemy/enemy-team';
 import { Team } from './entity/team/team.model';
 import { TeamModule } from './entity/team/team.module';
+import { TechniqueBranch } from './entity/technique/technique-branch.model';
 // import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
 
 const entity = [
@@ -43,7 +44,7 @@ const entity = [
   Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique, HeroItem,
   Race, RaceBonuses,
   Class, ClassBonuses,
-  Technique, TechniqueEffect,
+  Technique, TechniqueEffect, TechniqueBranch,
   Team,
   Effect, Item, Lvl, Skill, Statistic,
   Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem, EnemyTeam,

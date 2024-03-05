@@ -33,6 +33,44 @@ export class TechniqueController {
   constructor(private readonly techniqueService: TechniqueService) {
   }
   
+  // Technique Branch
+  @ApiOperation({ summary: 'Создание эффекта техники' })
+  @ApiResponse({ status: 200, type: Effect })
+  @Post('/branch/')
+  async createBranchTechnique(@Body() createTechniqueEffectDto: CreateTechniqueEffectDto) {
+    return await this.techniqueService.createBranchTechnique(createTechniqueEffectDto);
+  }
+  
+  @ApiOperation({ summary: 'Получение техник ветки' })
+  @ApiResponse({ status: 200, type: [Effect] })
+  @Get('/branch/')
+  async getBranchTechniques() {
+    return await this.techniqueService.getBranchTechniques();
+  }
+  
+  @ApiOperation({ summary: 'Получение техники ветки по id' })
+  @ApiResponse({ status: 200, type: [Effect] })
+  @Get('/branch/:branch_id')
+  async getBranchTechnique(@Param('branch_id') branch_id: number) {
+    return await this.techniqueService.getBranchTechnique(branch_id);
+  }
+  
+  @ApiOperation({ summary: 'Обновление техники ветки по id' })
+  @ApiResponse({ status: 200, type: Technique })
+  @Put('/branch/:branch_id')
+  async updateBranchTechnique(@Body() techniqueEffect: TechniqueEffect, @Param('branch_id') branch_id: number) {
+    return await this.techniqueService.updateBranchTechnique(techniqueEffect, branch_id);
+  }
+  
+  @ApiOperation({ summary: 'Удаление техники ветки по id' })
+  @ApiResponse({ status: 200 })
+  @Delete('/branch/:branch_id')
+  async deleteBranchTechnique(@Param('branch_id') branch_id: number) {
+    return await this.techniqueService.deleteBranchTechnique(branch_id);
+  }
+  
+  
+  // Technique
   @ApiOperation({ summary: 'Получение списка техник' })
   @ApiResponse({ status: 200, type: [Technique] })
   @Get()
@@ -49,14 +87,14 @@ export class TechniqueController {
   
   @ApiOperation({ summary: 'Получение эффектов техники по id' })
   @ApiResponse({ status: 200, type: Technique })
-  @Get(':technique_id')
+  @Get('/:technique_id')
   async getTechnique(@Param('technique_id') technique_id: number) {
     return await this.techniqueService.getTechnique(technique_id);
   }
   
   @ApiOperation({ summary: 'Обновление техники по id' })
   @ApiResponse({ status: 200, type: Technique })
-  @Put(':technique_id')
+  @Put('/:technique_id')
   async updateTechnique(@Body() technique: Technique, @Param('technique_id') technique_id: number) {
     return await this.techniqueService.updateTechnique(technique, technique_id);
   }

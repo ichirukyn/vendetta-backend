@@ -67,7 +67,7 @@ export class ArenaFloorService {
   async getArenaFloorEnemies(floor_id: number) {
     return await this.floorsEnemyRepository.find({
       where: { floor_id: floor_id },
-      relations: ['enemy', 'enemy.race', 'enemy.class', 'enemy.stats'],
+      relations: ['enemy', 'enemy.race', 'enemy.class', 'enemy.stats', 'team'],
       order: { enemy: { stats: { lvl: 'ASC' } } },
     });
   }

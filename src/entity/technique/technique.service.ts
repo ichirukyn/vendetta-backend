@@ -6,27 +6,29 @@ import { CreateTechniqueDto } from './dto/create-technique';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
 import { TechniqueEffect } from './technique-effect.model';
 import { TechniqueQueryDTO } from './technique.controller';
+import { TechniqueBranch } from './technique-branch.model';
 
 @Injectable()
 export class TechniqueService {
   constructor(
     @InjectRepository(Technique) private techniqueRepository: Repository<Technique>,
     @InjectRepository(TechniqueEffect) private techniqueEffectRepository: Repository<TechniqueEffect>,
+    @InjectRepository(TechniqueBranch) private techniqueBranchRepository: Repository<TechniqueBranch>,
   ) {
   }
   
   async getTechniques({ hidden = true, author = undefined, race_id, class_id }: TechniqueQueryDTO) {
     return await this.techniqueRepository.find({
       relations: ['effects'],
-      where: { hidden: hidden ? undefined : hidden, author: author, class_id: class_id, race_id: race_id},
-      order: { id: 'ASC' }
+      where: { hidden: hidden ? undefined : hidden, author: author, class_id: class_id, race_id: race_id },
+      order: { id: 'ASC' },
     });
   }
   
   async getTechnique(technique_id: number) {
     return await this.techniqueRepository.findOne({
       relations: ['effects'],
-      where: { id: technique_id }
+      where: { id: technique_id },
     });
   }
   
@@ -39,6 +41,7 @@ export class TechniqueService {
     await this.techniqueRepository.update({ id: technique_id }, techniqueData);
     return techniqueData;
   }
+  
   
   // Technique Effect
   async createTechniqueEffect(data: CreateTechniqueEffectDto, technique_id: number) {
@@ -67,5 +70,36 @@ export class TechniqueService {
   
   async deleteTechniqueEffect(effect_id: number, technique_id: number) {
     await this.techniqueEffectRepository.delete({ id: effect_id, technique_id: technique_id });
+  }
+  
+  
+  // Technique Branch
+  async createBranchTechnique(data: CreateTechniqueEffectDto) {
+    let effect = this.techniqueBranchRepository.create(data);
+    return await this.techniqueBranchRepository.save(effect);
+  }
+  
+  async getBranchTechniques() {
+    return await this.techniqueBranchRepository.find({
+      relations: ['technique', 'parent'],
+      order: { id: 'ASC' },
+    });
+  }
+  
+  async getBranchTechnique(branch_id: number) {
+    return await this.techniqueBranchRepository.find({
+      relations: ['technique', 'parent'],
+      where: { id: branch_id },
+      order: { id: 'ASC' },
+    });
+  }
+  
+  async updateBranchTechnique(techniqueEffectData: TechniqueEffect, branch_id: number) {
+    await this.techniqueBranchRepository.update({ id: branch_id }, techniqueEffectData);
+    return techniqueEffectData;
+  }
+  
+  async deleteBranchTechnique(branch_id: number) {
+    await this.techniqueBranchRepository.delete({ id: branch_id });
   }
 }
