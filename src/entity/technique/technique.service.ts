@@ -7,6 +7,7 @@ import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
 import { TechniqueEffect } from './technique-effect.model';
 import { TechniqueQueryDTO } from './technique.controller';
 import { TechniqueBranch } from './technique-branch.model';
+import { CreateTechniqueBranchDto } from './dto/create-tecgnique-branch';
 
 @Injectable()
 export class TechniqueService {
@@ -74,7 +75,7 @@ export class TechniqueService {
   
   
   // Technique Branch
-  async createBranchTechnique(data: CreateTechniqueEffectDto) {
+  async createBranchTechnique(data: CreateTechniqueBranchDto) {
     let effect = this.techniqueBranchRepository.create(data);
     return await this.techniqueBranchRepository.save(effect);
   }
@@ -87,7 +88,7 @@ export class TechniqueService {
   }
   
   async getBranchTechnique(branch_id: number) {
-    return await this.techniqueBranchRepository.find({
+    return await this.techniqueBranchRepository.findOne({
       relations: ['technique', 'parent'],
       where: { id: branch_id },
       order: { id: 'ASC' },

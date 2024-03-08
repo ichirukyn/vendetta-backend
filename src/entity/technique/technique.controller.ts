@@ -7,6 +7,7 @@ import { Effect } from '../effect/effect.model';
 import { CreateTechniqueEffectDto } from './dto/create-technique-effect';
 import { TechniqueEffect } from './technique-effect.model';
 import { IsBoolean, IsInt, IsOptional } from 'class-validator';
+import { CreateTechniqueBranchDto } from './dto/create-tecgnique-branch';
 
 export abstract class TechniqueQueryDTO {
   @IsBoolean()
@@ -37,8 +38,8 @@ export class TechniqueController {
   @ApiOperation({ summary: 'Создание эффекта техники' })
   @ApiResponse({ status: 200, type: Effect })
   @Post('/branch/')
-  async createBranchTechnique(@Body() createTechniqueEffectDto: CreateTechniqueEffectDto) {
-    return await this.techniqueService.createBranchTechnique(createTechniqueEffectDto);
+  async createBranchTechnique(@Body() createTechniqueBranchDto: CreateTechniqueBranchDto) {
+    return await this.techniqueService.createBranchTechnique(createTechniqueBranchDto);
   }
   
   @ApiOperation({ summary: 'Получение техник ветки' })

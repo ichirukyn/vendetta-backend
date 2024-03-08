@@ -161,10 +161,16 @@ export class EnemyService {
             is_transfer: false,
           };
           
-          const enemy = await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
+          // Добавить или создать предмет игроку
           if (item.count) await this.heroService.createHeroItem(data, hero_id);
-          await this.heroService.updateHeroMoney(hero_id, item.gold);
-          item.exp = await this.heroService.updateHeroExp(hero_id, enemy.lvl, item.exp);
+          
+          // Если предмет "золото", тогда добавить игроку золото и опыт..
+          if (item.item.id === 0) {
+            const enemy = await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
+            await this.heroService.updateHeroMoney(hero_id, item.gold);
+            item.exp = await this.heroService.updateHeroExp(hero_id, enemy.lvl, item.exp);
+          }
+          
           lootList.push(item);
         } else {
           lootList.push(item);

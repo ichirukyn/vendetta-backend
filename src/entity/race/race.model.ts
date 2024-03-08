@@ -7,25 +7,30 @@ export class Race {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @ApiProperty({ example: 'Люди' })
   @Column()
   name: string;
-
+  
   @ApiProperty({ example: 'Полносе описание...' })
   @Column()
   desc: string;
-
+  
   @ApiProperty({ example: 'Короткое описание...' })
   @Column()
   desc_short: string;
+  
+  @ApiProperty({ example: 'Скрыта ли раса?' })
+  @Column({ default: false })
+  hidden: boolean;
 }
+
 @Entity({ name: 'race_bonuses' })
 export class RaceBonuses extends Bonuses {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @ApiProperty({ example: 'Люди = 1' })
   @Column()
   @OneToOne(() => Race)
