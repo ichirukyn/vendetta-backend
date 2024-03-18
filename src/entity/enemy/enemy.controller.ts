@@ -8,6 +8,7 @@ import { CreateEnemyWeaponDto } from './dto/create-enemy-weapon';
 import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
 import { EnemyStats } from './enemy-stats.model';
 import { EnemyTeam } from './enemy-team';
+import { CreateEnemyItemDto } from './dto/create-enemy-item';
 
 @ApiTags('Enemy')
 @Controller('/enemy')
@@ -166,15 +167,15 @@ export class EnemyController {
   @ApiOperation({ summary: 'Создание предмета противника' })
   @ApiResponse({ status: 200, type: EnemyItem })
   @Post('/:enemy_id/item')
-  async createEnemyItem(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number) {
-    return await this.enemyService.createEnemyItem(createEnemyTechniqueDto, enemy_id);
+  async createEnemyItem(@Body() createEnemyItemDto: CreateEnemyItemDto, @Param('enemy_id') enemy_id: number) {
+    return await this.enemyService.createEnemyItem(createEnemyItemDto, enemy_id);
   }
   
   @ApiOperation({ summary: 'Обновление предмета противника' })
   @ApiResponse({ status: 200, type: EnemyItem })
-  @Put('/:enemy_id/item/:item_id')
-  async editEnemyItem(@Body() createEnemyTechniqueDto: CreateEnemyTechniqueDto, @Param('enemy_id') enemy_id: number, @Param('item_id') item_id: number) {
-    return await this.enemyService.editEnemyItem(createEnemyTechniqueDto, enemy_id, item_id);
+  @Put('/:enemy_id/item/:loot_id')
+  async editEnemyItem(@Body() createEnemyItemDto: CreateEnemyItemDto, @Param('enemy_id') enemy_id: number, @Param('loot_id') loot_id: number) {
+    return await this.enemyService.editEnemyItem(createEnemyItemDto, enemy_id, loot_id);
   }
   
   @ApiOperation({ summary: 'Удаление предмета противника' })

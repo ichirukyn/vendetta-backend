@@ -11,6 +11,7 @@ import { HeroService } from '../hero/hero.service';
 import { CreateHeroItemDto } from '../hero/dto/create-hero-item';
 import { rangeWithNumber } from '../../common/utils';
 import { EnemyTeam } from './enemy-team';
+import { CreateEnemyItemDto } from './dto/create-enemy-item';
 
 @Injectable()
 export class EnemyService {
@@ -186,13 +187,13 @@ export class EnemyService {
     return await this.enemyItemRepository.findOneBy({ enemy_id: enemy_id, item_id: item_id });
   }
   
-  async createEnemyItem(data: CreateEnemyTechniqueDto, enemy_id: number) {
+  async createEnemyItem(data: CreateEnemyItemDto, enemy_id: number) {
     const technique = this.enemyItemRepository.create({ ...data, enemy_id: enemy_id });
     return this.enemyItemRepository.save(technique);
   }
   
-  async editEnemyItem(data: CreateEnemyTechniqueDto, enemy_id: number, item_id: number) {
-    return this.enemyItemRepository.update({ enemy_id: enemy_id, item_id: item_id }, data);
+  async editEnemyItem(data: CreateEnemyItemDto, enemy_id: number, loot_id: number) {
+    return this.enemyItemRepository.update({ enemy_id: enemy_id, id: loot_id || data.id }, data);
   }
   
   async deleteEnemyItem(enemy_id: number, item_id: number) {

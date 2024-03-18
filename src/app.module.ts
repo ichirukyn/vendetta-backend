@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HeroModule } from './entity/hero/hero.module';
 import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './entity/hero/hero.model';
 import { HeroSkills } from './entity/hero/hero-skills.model';
-import { SkillModule } from './entity/skill/skill.module';
 import { Skill } from './entity/skill/skill.model';
 import { TechniqueModule } from './entity/technique/technique.module';
 import { Technique } from './entity/technique/technique.model';
@@ -36,7 +35,10 @@ import { EnemyTeam } from './entity/enemy/enemy-team';
 import { Team } from './entity/team/team.model';
 import { TeamModule } from './entity/team/team.module';
 import { TechniqueBranch } from './entity/technique/technique-branch.model';
-// import { TechniqueEffect } from '@/entity/technique/technique-effect.model';
+import { Spell } from './entity/spell/spell.model';
+import { SpellEffect } from './entity/spell/spell-effect.model';
+import { SpellBranch } from './entity/spell/spell-branch.model';
+import { SpellModule } from './entity/spell/spell.module';
 
 const entity = [
   ArenaFloor, ArenaFloorEnemy,
@@ -45,6 +47,7 @@ const entity = [
   Race, RaceBonuses,
   Class, ClassBonuses,
   Technique, TechniqueEffect, TechniqueBranch,
+  Spell, SpellEffect, SpellBranch,
   Team,
   Effect, Item, Lvl, Skill, Statistic,
   Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem, EnemyTeam,
@@ -70,7 +73,6 @@ const entity = [
     ArenaFloorModule,
     UsersModule,
     HeroModule,
-    SkillModule,
     RaceModule,
     ClassModule,
     TechniqueModule,
@@ -79,6 +81,7 @@ const entity = [
     ItemModule,
     EnemyModule,
     EventModule,
+    SpellModule,
   ],
   controllers: [AppController],
   providers: [AppService],
