@@ -21,7 +21,7 @@ export class Spell {
   desc_short: string;
   
   @ApiProperty({ example: 0.5 })
-  @Column({ type: 'double precision' })
+  @Column({ type: 'double precision', default: 0 })
   damage: number;
   
   @ApiProperty({ example: 'phys_damage' })
@@ -41,19 +41,19 @@ export class Spell {
   is_stack: boolean;
   
   @ApiProperty({ example: 1 })
-  @Column()
+  @Column({ nullable: true })
   class_id: number;
   
   @ApiProperty({ example: 1 })
-  @Column()
+  @Column({ nullable: true })
   race_id: number;
   
   @ApiProperty({ example: 'attack' })
-  @Column()
+  @Column({ default: 'attack' })
   type: string;
   
   @ApiProperty({ example: 0 })
-  @Column()
+  @Column({ default: 0 })
   cooldown: number;
   
   @OneToMany(() => SpellEffect, (effect) => effect.spell)
@@ -66,5 +66,9 @@ export class Spell {
   @ApiProperty({ example: 1 })
   @Column({ nullable: true })
   author_id: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column({ default: 1 })
+  rank: number;
 }
 

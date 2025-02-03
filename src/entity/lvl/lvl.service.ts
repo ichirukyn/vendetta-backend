@@ -5,13 +5,17 @@ import { Lvl } from './lvl.model';
 
 @Injectable()
 export class LvlService {
-  constructor(@InjectRepository(Lvl) private lvlRepository: Repository<Lvl>) {}
+  constructor(@InjectRepository(Lvl) private lvlRepository: Repository<Lvl>) {
+  }
   
   async getLvl(lvl: number) {
-    const user = await this.lvlRepository.findOneBy({ lvl: lvl });
+    return await this.lvlRepository.findOne({
+      where: { lvl: lvl },
+      cache: false,
+    });
   }
   
   async getLvls() {
-    return await this.lvlRepository.find();
+    return await this.lvlRepository.find({ cache: false });
   }
 }

@@ -12,6 +12,7 @@ import { CreateHeroItemDto } from '../hero/dto/create-hero-item';
 import { rangeWithNumber } from '../../common/utils';
 import { EnemyTeam } from './enemy-team';
 import { CreateEnemyItemDto } from './dto/create-enemy-item';
+import { LootDto } from './dto/loot-dto';
 
 @Injectable()
 export class EnemyService {
@@ -134,7 +135,7 @@ export class EnemyService {
     });
   }
   
-  async getEnemyLoot(enemy_id: number, hero_id: number) {
+  async getEnemyLoot(enemy_id: number, data: LootDto) {
     const lootList: EnemyItem[] = [];
     const itemList = await this.enemyItemRepository.find({
       relations: ['item'],
@@ -148,14 +149,29 @@ export class EnemyService {
         item.gold = rangeWithNumber(item.gold, 0.1);
         item.exp = rangeWithNumber(item.exp, 0.1);
         
+        const is_update = !!data?.hero_id;
+        
         if (item.item.id === 0) {
           item.gold = item.count;
           item.count = 0;
         }
         
-        if (hero_id) {
-          let data: CreateHeroItemDto = {
-            hero_id: hero_id,
+        // Если предмет "золото", тогда добавить игроку золото и опыт..
+        if (item.item.id === 0) {
+          let lvl = data?.enemy_lvl ?? 0;
+          
+          if (!data?.enemy_lvl) {
+            const enemy = await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
+            lvl = enemy.lvl;
+          }
+          
+          item.gold = await this.heroService.updateHeroMoney(data?.hero_id, item.gold, lvl, is_update);
+          item.exp = await this.heroService.updateHeroExp(data?.hero_id, lvl, item.exp, is_update);
+        }
+        
+        if (is_update) {
+          let newItem: CreateHeroItemDto = {
+            hero_id: data?.hero_id,
             count: item.count,
             item_id: item.item_id,
             is_stack: true,
@@ -163,14 +179,7 @@ export class EnemyService {
           };
           
           // Добавить или создать предмет игроку
-          if (item.count) await this.heroService.createHeroItem(data, hero_id);
-          
-          // Если предмет "золото", тогда добавить игроку золото и опыт..
-          if (item.item.id === 0) {
-            const enemy = await this.enemyStatsRepository.findOneBy({ enemy_id: enemy_id });
-            await this.heroService.updateHeroMoney(hero_id, item.gold);
-            item.exp = await this.heroService.updateHeroExp(hero_id, enemy.lvl, item.exp);
-          }
+          if (item.count) await this.heroService.createHeroItem(newItem, data?.hero_id);
           
           lootList.push(item);
         } else {

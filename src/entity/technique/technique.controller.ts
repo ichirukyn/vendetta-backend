@@ -11,8 +11,7 @@ import { CreateTechniqueBranchDto } from './dto/create-tecgnique-branch';
 
 export abstract class TechniqueQueryDTO {
   @IsBoolean()
-  @IsOptional()
-  hidden?: boolean;
+  hidden?: string;
   
   @IsInt()
   @IsOptional()

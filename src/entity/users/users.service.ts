@@ -10,8 +10,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Hero) private usersHeroRepository: Repository<Hero>,
-  ) {
-  }
+  ) {}
   
   async createUser(dto: CreateUserDto) {
     let user = this.usersRepository.create(dto);

@@ -66,5 +66,9 @@ export class Technique {
   @ApiProperty({ example: false })
   @Column({ default: false })
   hidden: boolean;
+  
+  @ApiProperty({ example: 1 })
+  @Column({ default: 1 })
+  rank: number;
 }
 

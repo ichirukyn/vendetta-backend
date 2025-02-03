@@ -163,3 +163,26 @@ export class HeroItem {
   @Column()
   is_transfer: boolean;
 }
+
+@Entity({ name: 'hero_weapons' })
+export class HeroWeapon {
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  hero_id: number;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  weapon_id: number;
+  
+  @OneToOne(() => Item)
+  @JoinColumn({ name: 'weapon_id' })
+  item: Item;
+  
+  @ApiProperty({ example: 1 })
+  @Column()
+  lvl: number;
+}

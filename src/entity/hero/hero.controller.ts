@@ -2,12 +2,15 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HeroService } from './hero.service';
 import { HeroSkills } from './hero-skills.model';
-import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique, HeroWeapon } from './hero.model';
 import { User } from '../users/user.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { EnemyTechnique } from '../enemy/enemy.model';
 import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
 import { CreateHeroItemDto } from './dto/create-hero-item';
+import { HeroSpell } from './hero-spell.model';
+import { CreateHeroSpellDto } from './dto/create-hero-spell';
+import { CreateHeroWeaponDto } from './dto/create-hero-weapon';
 
 @ApiTags('Hero')
 @Controller('/hero')
@@ -99,39 +102,92 @@ export class HeroController {
   }
   
   
+  // Spell
+  @ApiOperation({ summary: 'Получение заклинаний игрока' })
+  @ApiResponse({ status: 200, type: [HeroSpell] })
+  @Get('/:hero_id/spell')
+  async getHeroSpells(@Param('hero_id') hero_id: number) {
+    return await this.heroService.getHeroSpells(hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Получение заклинания по id, игрока' })
+  @ApiResponse({ status: 200, type: HeroSpell })
+  @Get('/:hero_id/spell/:spell_id')
+  async getHeroSpell(@Param('hero_id') hero_id: number, @Param('spell_id') spell_id: number) {
+    return await this.heroService.getHeroSpell(hero_id, spell_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание заклинания игрока' })
+  @ApiResponse({ status: 200, type: HeroSpell })
+  @Post('/:hero_id/spell')
+  async createHeroSpell(@Body() createHeroSpellDto: CreateHeroSpellDto, @Param('hero_id') hero_id: number) {
+    return await this.heroService.createHeroSpell(createHeroSpellDto, hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Удаление заклинания игрока' })
+  @ApiResponse({ status: 200, type: Boolean })
+  @Delete('/:hero_id/spell/:spell_id')
+  async deleteHeroSpell(@Param('hero_id') hero_id: number, @Param('spell_id') spell_id: number) {
+    return await this.heroService.deleteHeroSpell(hero_id, spell_id);
+  }
+  
+  
   // Item
-  @ApiOperation({ summary: 'Получение предматов игрока' })
+  @ApiOperation({ summary: 'Получение предметов игрока' })
   @ApiResponse({ status: 200, type: [HeroItem] })
   @Get('/:hero_id/item')
   async getHeroItems(@Param('hero_id') hero_id: number) {
     return await this.heroService.getHeroItems(hero_id);
   }
   
-  @ApiOperation({ summary: 'Получение предмата по id, игрока' })
+  @ApiOperation({ summary: 'Получение предмета по id, игрока' })
   @ApiResponse({ status: 200, type: HeroItem })
-  @Get('/:hero_id/item/:technique_id')
-  async getHeroItem(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
-    return await this.heroService.getHeroItem(hero_id, technique_id);
+  @Get('/:hero_id/item/:item_id')
+  async getHeroItem(@Param('hero_id') hero_id: number, @Param('item_id') item_id: number) {
+    return await this.heroService.getHeroItem(hero_id, item_id);
   }
   
-  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiOperation({ summary: 'Создание предмета игрока' })
   @ApiResponse({ status: 200, type: HeroItem })
   @Post('/:hero_id/item')
   async createHeroItem(@Body() createHeroItemDto: CreateHeroItemDto, @Param('hero_id') hero_id: number) {
     return await this.heroService.createHeroItem(createHeroItemDto, hero_id);
   }
   
-  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiOperation({ summary: 'Создание предмета игрока' })
   @ApiResponse({ status: 200, type: HeroItem })
   @Post('/:hero_id/items')
   async createHeroItems(@Body() createHeroItemDto: [CreateHeroItemDto], @Param('hero_id') hero_id: number) {
     return await this.heroService.createHeroItems(createHeroItemDto, hero_id);
   }
   
-  @ApiOperation({ summary: 'Создание предмата игрока' })
+  @ApiOperation({ summary: 'Удаление предмета игрока' })
   @ApiResponse({ status: 200, type: HeroItem })
-  @Delete('/:hero_id/item/:technique_id')
-  async deleteHeroItem(@Param('hero_id') hero_id: number, @Param('technique_id') technique_id: number) {
-    return await this.heroService.deleteHeroItem(hero_id, technique_id);
+  @Delete('/:hero_id/item/:item_id')
+  async deleteHeroItem(@Param('hero_id') hero_id: number, @Param('item_id') item_id: number) {
+    return await this.heroService.deleteHeroItem(hero_id, item_id);
+  }
+  
+  
+  // Weapon
+  @ApiOperation({ summary: 'Получение оружия игрока' })
+  @ApiResponse({ status: 200, type: HeroWeapon })
+  @Get('/:hero_id/weapon')
+  async getHeroWeapons(@Param('hero_id') hero_id: number) {
+    return await this.heroService.getHeroWeapon(hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Создание оружия игрока' })
+  @ApiResponse({ status: 200, type: HeroWeapon })
+  @Post('/:hero_id/weapon')
+  async createHeroWeapon(@Body() createHeroWeaponDto: CreateHeroWeaponDto, @Param('hero_id') hero_id: number) {
+    return await this.heroService.createHeroWeapon(createHeroWeaponDto, hero_id);
+  }
+  
+  @ApiOperation({ summary: 'Удаление оружия игрока' })
+  @ApiResponse({ status: 200, type: HeroWeapon })
+  @Delete('/:hero_id/weapon/:weapon_id')
+  async deleteHeroWeapon(@Param('hero_id') hero_id: number, @Param('weapon_id') weapon_id: number) {
+    return await this.heroService.deleteHeroWeapon(hero_id, weapon_id);
   }
 }

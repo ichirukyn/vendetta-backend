@@ -24,15 +24,15 @@ export class Effect {
   
   @ApiProperty({ example: 'strength/health/damage' })
   @Column()
-  if_first: string;
+  condition_attribute: string;
   
   @ApiProperty({ example: '>/!=/==' })
   @Column()
-  if: string;
+  condition: string;
   
   @ApiProperty({ example: '0/100/0.5' })
   @Column({ type: 'double precision', transformer: { from: value => parseFloat(value), to: value => value } })
-  if_second: number;
+  condition_value: number;
   
   @ApiProperty({ example: 'my/enemy' })
   @Column()

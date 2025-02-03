@@ -1,12 +1,15 @@
 import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique, HeroWeapon } from './hero.model';
 import { HeroSkills } from './hero-skills.model';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { CreateHeroTechniqueDto } from './dto/create-hero-technique';
 import { CreateHeroItemDto } from './dto/create-hero-item';
-import { exp_reward } from '../../common/utils/exp_reward';
+import { reward } from '../../common/utils/reward';
+import { HeroSpell } from './hero-spell.model';
+import { CreateHeroSpellDto } from './dto/create-hero-spell';
+import { CreateHeroWeaponDto } from './dto/create-hero-weapon';
 
 @Injectable()
 export class HeroService {
@@ -16,7 +19,9 @@ export class HeroService {
     @InjectRepository(HeroSkills) private heroSkillsRepository: Repository<HeroSkills>,
     @InjectRepository(HeroLvl) private heroLvlRepository: Repository<HeroLvl>,
     @InjectRepository(HeroTechnique) private heroTechniquesRepository: Repository<HeroTechnique>,
+    @InjectRepository(HeroSpell) private heroSpellsRepository: Repository<HeroSpell>,
     @InjectRepository(HeroItem) private heroItemsRepository: Repository<HeroItem>,
+    @InjectRepository(HeroWeapon) private heroWeaponRepository: Repository<HeroWeapon>,
   ) {
   }
   
@@ -36,45 +41,59 @@ export class HeroService {
     return this.heroesRepository.update({ id: hero_id }, { ...data, id: hero_id });
   }
   
-  async updateHeroMoney(hero_id: number, money: number) {
+  async updateHeroMoney(hero_id: number, money: number, enemy_lvl?: number, is_update?: boolean) {
     const hero = await this.heroesRepository.findOneBy({ id: hero_id });
-    console.log('GETMONEY, ', money);
-    console.log('ADDMONEY, ', hero.money + money);
+    
+    const new_money = reward(hero.money, money, enemy_lvl, 'money');
+    const add_money = new_money - hero.money
+    
+    console.log('GET_MONEY, ', money);
+    console.log('ADD_MONEY, ', add_money);
+    console.log('TOTAL_MONEY, ', new_money);
+    
     if (hero.money + money >= 0) {
-      return this.heroesRepository.update({ id: hero_id }, { ...hero, money: hero.money + money });
+      if (is_update) await this.heroesRepository.update({ id: hero_id }, { ...hero, money: hero.money + money });
+      return add_money
     } else {
       throw new ConflictException('Недостаточно средств');
     }
   }
   
   async getHeroes() {
-    return await this.heroesRepository.find();
+    return await this.heroesRepository.find({ cache: false });
   }
   
   async getHeroStats(hero_id: number) {
-    return await this.heroStatsRepository.findOneBy({ hero_id });
+    return await this.heroStatsRepository.findOne({
+      where: { hero_id },
+    });
   }
   
   async getHeroSkills(hero_id: number) {
-    return await this.heroSkillsRepository.findOneBy({ hero_id });
+    return await this.heroSkillsRepository.findOne({
+      where: { hero_id },
+    });
   }
   
   
   // Lvl
   async getHeroLvl(hero_id: number) {
-    return this.heroLvlRepository
-      .createQueryBuilder('hero_level')
-      .innerJoin('hero_level.level', 'levels')
+    const lvl = await this.heroLvlRepository
+      .createQueryBuilder('hero_levels')
+      .innerJoin('hero_levels.level', 'levels')
       .addSelect(['levels.exp_to_lvl', 'levels.exp_total'])
       .where({ hero_id: hero_id })
+      .cache(false)
       .getOne();
+    
+    return lvl;
   }
   
-  async updateHeroExp(hero_id: number, enemy_lvl: number, exp: number) {
+  async updateHeroExp(hero_id: number, enemy_lvl: number, exp: number, is_update?: boolean) {
     const lvl = await this.heroLvlRepository.findOneBy({ hero_id: hero_id });
-    const new_exp = exp_reward(lvl.exp, exp, enemy_lvl);
+    const new_exp = reward(lvl.exp, exp, enemy_lvl, 'exp');
     
-    await this.heroLvlRepository.update({ hero_id: hero_id }, { ...lvl, exp: new_exp });
+    if (is_update) await this.heroLvlRepository.update({ hero_id: hero_id }, { ...lvl, exp: new_exp });
     
     return new_exp - lvl.exp;
   }
@@ -85,6 +104,7 @@ export class HeroService {
     const techniques = await this.heroTechniquesRepository.find({
       relations: ['technique', 'technique.effects'],
       where: { hero_id: hero_id },
+      cache: false,
     });
     
     if (!techniques) {
@@ -116,11 +136,52 @@ export class HeroService {
     return this.heroTechniquesRepository.delete({ hero_id: hero_id, technique_id: technique_id });
   }
   
+  
+  // Spell
+  async getHeroSpells(hero_id: number) {
+    const spells = await this.heroSpellsRepository.find({
+      relations: ['spell', 'spell.effects'],
+      where: { hero_id: hero_id },
+      cache: false,
+    });
+    
+    if (!spells) {
+      throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);
+    }
+    
+    return spells;
+  }
+  
+  async getHeroSpell(hero_id: number, spell_id: number) {
+    const spells = await this.heroSpellsRepository.findOne({
+      relations: ['spell'],
+      where: { spell_id: spell_id, hero_id: hero_id },
+      cache: false,
+    });
+    
+    if (!spells) {
+      throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);
+    }
+    
+    return spells;
+  }
+  
+  async createHeroSpell(data: CreateHeroSpellDto, hero_id: number) {
+    const technique = this.heroSpellsRepository.create({ ...data, hero_id: hero_id });
+    return this.heroSpellsRepository.save(technique);
+  }
+  
+  async deleteHeroSpell(hero_id: number, spell_id: number) {
+    return !!await this.heroSpellsRepository.delete({ hero_id: hero_id, spell_id: spell_id });
+  }
+  
+  
   // Item
   async getHeroItems(hero_id: number) {
     const items = await this.heroItemsRepository.find({
       relations: ['item'],
       where: { hero_id: hero_id },
+      cache: false,
     });
     
     if (!items) {
@@ -134,6 +195,7 @@ export class HeroService {
     const item = await this.heroItemsRepository.findOne({
       relations: ['technique'],
       where: { item_id: item_id, hero_id: hero_id },
+      cache: false,
     });
     
     if (!item) {
@@ -163,5 +225,28 @@ export class HeroService {
   
   async deleteHeroItem(hero_id: number, item_id: number) {
     return this.heroItemsRepository.delete({ hero_id: hero_id, item_id: item_id });
+  }
+  
+  
+  // Weapon
+  async getHeroWeapon(hero_id: number) {
+    const weapons = await this.heroWeaponRepository.findOne({
+      relations: ['item'],
+      where: { hero_id: hero_id },
+      cache: false,
+    });
+    
+    if (!weapons) throw new HttpException('Техника не найдена', HttpStatus.BAD_REQUEST);
+    
+    return weapons;
+  }
+  
+  async createHeroWeapon(data: CreateHeroWeaponDto, hero_id: number) {
+    const technique = this.heroWeaponRepository.create({ ...data, hero_id: hero_id });
+    return this.heroWeaponRepository.save(technique);
+  }
+  
+  async deleteHeroWeapon(hero_id: number, weapon_id: number) {
+    return !!await this.heroWeaponRepository.delete({ hero_id: hero_id, weapon_id: weapon_id });
   }
 }

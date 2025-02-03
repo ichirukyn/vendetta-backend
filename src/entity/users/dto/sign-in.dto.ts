@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class SignInDto {
   @ApiProperty({ example: '12345678' })
   readonly chat_id: string;
   @ApiProperty({ example: 'UserLogin' })
   readonly login: string;
-  @ApiProperty({ example: 1 })
-  readonly ref_id: number;
-  // @ApiProperty({ example: 'AnyPassword' })
-  // readonly password?: string;
+  @ApiProperty({ example: 'AnyPassword' })
+  readonly password?: string;
 }

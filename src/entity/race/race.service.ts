@@ -14,8 +14,11 @@ export class RaceService {
   ) {
   }
   
-  async getRace(race_id: number, { hidden=false }: QueryRaceDto) {
-    const user = await this.racesRepository.findOneBy({ id: race_id, hidden: hidden });
+  async getRace(race_id: number, { hidden }: QueryRaceDto) {
+    const user = await this.racesRepository.findOne({
+      where: { id: race_id, hidden },
+      cache: false,
+    });
     
     if (!user) {
       throw new HttpException('Раса не найдена', HttpStatus.BAD_REQUEST);
@@ -24,15 +27,21 @@ export class RaceService {
     return user;
   }
   
-  async getRaces({ hidden=false }: QueryRaceDto) {
-    return await this.racesRepository.findBy({ hidden: hidden });
+  async getRaces({ hidden }: QueryRaceDto) {
+    return await this.racesRepository.find({ order: { id: 'ASC' }, where: { hidden: undefined }, relations: ['bonuses', 'tag'], cache: false });
   }
   
   async getRaceBonuses(race_id: number) {
-    return  await this.raceBonusesRepository.findBy({ race_id: race_id });
+    return await this.raceBonusesRepository.find({
+      where: { race_id: race_id },
+      cache: false,
+    });
   }
   
   async getClassByRace(race_id?: number) {
-    return await this.classRepository.findBy({ race_id: race_id });
+    return await this.classRepository.find({
+      where: { race_id: race_id },
+      cache: false,
+    });
   }
 }

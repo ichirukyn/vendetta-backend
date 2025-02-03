@@ -9,6 +9,7 @@ import { CreateEnemyTechniqueDto } from './dto/create-enemy-technique';
 import { EnemyStats } from './enemy-stats.model';
 import { EnemyTeam } from './enemy-team';
 import { CreateEnemyItemDto } from './dto/create-enemy-item';
+import { LootDto } from './dto/loot-dto';
 
 @ApiTags('Enemy')
 @Controller('/enemy')
@@ -153,8 +154,8 @@ export class EnemyController {
   @ApiOperation({ summary: 'Получение списка предметов противника' })
   @ApiResponse({ status: 200, type: [EnemyItem] })
   @Get('/:enemy_id/loot')
-  async getEnemyLoot(@Param('enemy_id') enemy_id: number, @Query('hero_id') hero_id: number | undefined) {
-    return await this.enemyService.getEnemyLoot(enemy_id, hero_id);
+  async getEnemyLoot(@Param('enemy_id') enemy_id: number, @Query() params: LootDto) {
+    return await this.enemyService.getEnemyLoot(enemy_id, params);
   }
   
   @ApiOperation({ summary: 'Получение предмета противника по id' })

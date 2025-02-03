@@ -18,10 +18,11 @@ export class TechniqueService {
   ) {
   }
   
-  async getTechniques({ hidden = true, author = undefined, race_id, class_id }: TechniqueQueryDTO) {
+  async getTechniques({ hidden = 'true', author = undefined, race_id, class_id }: TechniqueQueryDTO) {
+    // TODO: Починить hidden....
     return await this.techniqueRepository.find({
       relations: ['effects'],
-      where: { hidden: hidden ? undefined : hidden, author: author, class_id: class_id, race_id: race_id },
+      where: { hidden: hidden === 'false' ? false : undefined, author: author, class_id: class_id, race_id: race_id },
       order: { id: 'ASC' },
     });
   }

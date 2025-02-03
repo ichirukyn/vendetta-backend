@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import * as process from 'process';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HeroModule } from './entity/hero/hero.module';
-import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique } from './entity/hero/hero.model';
+import { Hero, HeroItem, HeroLvl, HeroStats, HeroTechnique, HeroWeapon } from './entity/hero/hero.model';
 import { HeroSkills } from './entity/hero/hero-skills.model';
 import { Skill } from './entity/skill/skill.model';
 import { TechniqueModule } from './entity/technique/technique.module';
@@ -39,15 +38,20 @@ import { Spell } from './entity/spell/spell.model';
 import { SpellEffect } from './entity/spell/spell-effect.model';
 import { SpellBranch } from './entity/spell/spell-branch.model';
 import { SpellModule } from './entity/spell/spell.module';
+import { HeroSpell } from './entity/hero/hero-spell.model';
+import { TagModule } from './entity/tag/tag.module';
+import { Tag } from './entity/tag/tag.model';
+import { config } from './config';
 
 const entity = [
   ArenaFloor, ArenaFloorEnemy,
   User,
-  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique, HeroItem,
+  Hero, HeroStats, HeroSkills, HeroLvl, HeroTechnique, HeroItem, HeroSpell, HeroWeapon,
   Race, RaceBonuses,
   Class, ClassBonuses,
   Technique, TechniqueEffect, TechniqueBranch,
   Spell, SpellEffect, SpellBranch,
+  Tag,
   Team,
   Effect, Item, Lvl, Skill, Statistic,
   Enemy, EnemyStats, EnemyWeapon, EnemyTechnique, EnemyItem, EnemyTeam,
@@ -61,14 +65,24 @@ const entity = [
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: String(process.env.DB_PASS),
-      database: process.env.DB_NAME,
+      host: config.database.host,
+      port: config.database.port,
+      username: config.database.user,
+      password: config.database.pass,
+      database: config.database.name,
       entities: entity,
       logging: true,
       logNotifications: true,
+      // TODO: В будущем
+      // synchronize: true,
+      cache: {
+        duration: 300000,
+        type: 'redis',
+        options: {
+          host: 'localhost',
+          port: 6379,
+        }
+      }
     }),
     ArenaFloorModule,
     UsersModule,
@@ -82,6 +96,7 @@ const entity = [
     EnemyModule,
     EventModule,
     SpellModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -42,7 +42,6 @@ export class RaceController {
   @ApiResponse({ status: 200, type: [Class] })
   @Get('/:race_id/class')
   async getClassByRace(@Param('race_id') race_id: number) {
-    console.log('123');
     return await this.raceService.getClassByRace(race_id);
   }
 }
