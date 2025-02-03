@@ -72,17 +72,7 @@ const entity = [
       database: config.database.name,
       entities: entity,
       logging: true,
-      logNotifications: true,
-      // TODO: В будущем
-      // synchronize: true,
-      cache: {
-        duration: 300000,
-        type: 'redis',
-        options: {
-          host: 'localhost',
-          port: 6379,
-        }
-      }
+      logNotifications: true
     }),
     ArenaFloorModule,
     UsersModule,
