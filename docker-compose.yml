@@ -10,10 +10,11 @@ services:
     volumes:
         - postgresDB:/var/lib/postgres
     networks:
-      tg:
+      vendetta-network:
 
 volumes:
   postgresDB:
 
 networks:
-  tg:
+  vendetta-network:
+    driver: bridge
