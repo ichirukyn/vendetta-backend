@@ -45,7 +45,7 @@ export class HeroService {
     const hero = await this.heroesRepository.findOneBy({ id: hero_id });
     
     const new_money = reward(hero.money, money, enemy_lvl, 'money');
-    const add_money = new_money - hero.money
+    const add_money = new_money - hero.money;
     
     console.log('GET_MONEY, ', money);
     console.log('ADD_MONEY, ', add_money);
@@ -53,7 +53,7 @@ export class HeroService {
     
     if (hero.money + money >= 0) {
       if (is_update) await this.heroesRepository.update({ id: hero_id }, { ...hero, money: hero.money + money });
-      return add_money
+      return add_money;
     } else {
       throw new ConflictException('Недостаточно средств');
     }
@@ -90,12 +90,14 @@ export class HeroService {
   }
   
   async updateHeroExp(hero_id: number, enemy_lvl: number, exp: number, is_update?: boolean) {
-    const lvl = await this.heroLvlRepository.findOneBy({ hero_id: hero_id });
-    const new_exp = reward(lvl.exp, exp, enemy_lvl, 'exp');
+    const hero_lvl = await this.heroLvlRepository.findOneBy({ hero_id: hero_id });
     
-    if (is_update) await this.heroLvlRepository.update({ hero_id: hero_id }, { ...lvl, exp: new_exp });
+    let new_exp = reward(hero_lvl.exp, exp, enemy_lvl, 'exp');
+    if (hero_lvl.lvl >= 360) new_exp = 0;
     
-    return new_exp - lvl.exp;
+    if (is_update) await this.heroLvlRepository.update({ hero_id: hero_id }, { ...hero_lvl, exp: new_exp });
+    
+    return new_exp - hero_lvl.exp;
   }
   
   
