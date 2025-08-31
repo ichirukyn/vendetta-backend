@@ -93,7 +93,7 @@ export class HeroService {
     const hero_lvl = await this.heroLvlRepository.findOneBy({ hero_id: hero_id });
     
     let new_exp = reward(hero_lvl.exp, exp, enemy_lvl, 'exp');
-    if (hero_lvl.lvl >= 360) new_exp = 0;
+    if (hero_lvl.lvl >= 360) new_exp = hero_lvl.exp;
     
     if (is_update) await this.heroLvlRepository.update({ hero_id: hero_id }, { ...hero_lvl, exp: new_exp });
     
